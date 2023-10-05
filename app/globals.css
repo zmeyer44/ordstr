@@ -6,7 +6,7 @@
   :root {
     --background: 215 28% 17%;
     --background-gray: 215 14% 34%;
-    --foreground: 222.2 47.4% 11.2%;
+    --foreground: 188 86% 53%;
 
     --primary: 191 63% 35%;
     --primary-foreground: 188 86% 53%;
@@ -17,19 +17,19 @@
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
 
-    --muted: 220 14.3% 95.9%;
+    --muted: 191 63% 35%;
     --muted-foreground: 220 8.9% 46.1%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100% 0;
+    --card-foreground: 188 86% 53%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
+    --popover: 215 28% 17%;
+    --popover-foreground: 188 86% 53%;
 
-    --border: 220 13% 91%;
+    --border: 188 86% 53%;
     --input: 220 13% 91%;
     --ring: 224 71.4% 4.1%;
 
@@ -73,5 +73,13 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+@layer components {
+  .center {
+    @apply flex items-center justify-center;
+  }
+  .theme-shadow {
+    @apply transition-all hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-accent-3d;
   }
 }

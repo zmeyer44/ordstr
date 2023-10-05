@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import TRPCProvider from "./trpc";
 import { ModalProvider } from "./modalContext/provider";
 import useRouteChange from "@/lib/hooks/useRouteChange";
+import NostrProvider from "./nostrProvider";
 // import useServiceWorker from "~/hooks/useServiceWorker";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -19,10 +20,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useRouteChange(handleRouteChange);
   return (
     <>
-      <TRPCProvider>
-        <ModalProvider>{children}</ModalProvider>
-        {/* {children} */}
-      </TRPCProvider>
+      <NostrProvider>
+        <TRPCProvider>
+          <ModalProvider>{children}</ModalProvider>
+          {/* {children} */}
+        </TRPCProvider>
+      </NostrProvider>
       <Toaster
         toastOptions={{
           className: "bg-gray-900 text-gray-200",

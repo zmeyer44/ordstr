@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
+    "./containers/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
@@ -71,6 +72,24 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      boxShadow: {
+        "accent-3d": "4px 4px 0 0 hsl(var(--accent-foreground))",
+      },
+      zIndex: {
+        60: 60,
+        70: 70,
+        80: 80,
+        90: 90,
+        99: 99,
+        mobileTabs: 980,
+        "header-": 989,
+        header: 990,
+        "header+": 991,
+        headerDialog: 991,
+        "modal-": 997,
+        modal: 998,
+        top: 999,
       },
     },
   },
