@@ -111,6 +111,7 @@ export default function KindCard({
                   tags.filter((t) => t[0] === "t").map((t) => t[1])
                 ).map((t) => (
                   <Badge
+                    key={t}
                     variant={
                       queryParams.getAll("t").includes(t) ? "accent" : "default"
                     }
