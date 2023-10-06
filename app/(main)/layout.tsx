@@ -1,5 +1,6 @@
 import Header from "./_layoutComponents/Header";
 import Footer from "./_layoutComponents/Footer";
+import NewEventButton from "./_layoutComponents/NewEventButton";
 import { cn } from "@/lib/utils";
 
 export default function RootLayout({
@@ -14,6 +15,7 @@ export default function RootLayout({
         <div className="flex-1">{children}</div>
         <Footer />
       </main>
+      <NewEventButton />
     </div>
   );
 }
