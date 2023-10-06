@@ -18,7 +18,7 @@ const RenderText = ({ text }: { text?: string }) => {
   const cleanTextArray = formattedText.split("##[link]##");
 
   cleanTextArray.forEach((string, index) => {
-    const jsxElement = <span>{string}</span>;
+    const jsxElement = <span className="">{string}</span>;
     Elements.push(jsxElement);
     let specialElement;
     if (specialValuesArray?.length && specialValuesArray.length > index) {
@@ -36,7 +36,7 @@ const RenderText = ({ text }: { text?: string }) => {
         // specialElement = <span>{cleanUrl(specialValuesArray[index])}</span>;
       } else if (specialValuesArray[index]?.match(hashtagRegex)) {
         specialElement = (
-          <Link href={`/${specialValuesArray[index]?.substring(1)}`}>
+          <Link href={`/?t=${specialValuesArray[index]?.substring(1)}`}>
             <span className="text-primary-foreground hover:underline">
               {specialValuesArray[index]}
             </span>

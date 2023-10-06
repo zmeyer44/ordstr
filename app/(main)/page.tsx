@@ -5,16 +5,8 @@ import Feed from "@/containers/Feed";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-between p-24">
-      {/* <Link href={"/"}>
-        <KindCard
-          clickable={true}
-          title="Zach@ordstr.com"
-          content="This is a test note on nostr. Making it about 2 lines long so it is somewhat realistic for client."
-          timestamp={new Date()}
-        />
-      </Link> */}
-      <div className="max-w-[600px]">
+    <div className="pt-10">
+      <div className="max-w-[600px] px-4 sm:px-10 md:px-10 mx-auto">
         <Feed />
       </div>
     </div>

@@ -98,15 +98,15 @@ export default function KindCard({
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col divide-y-2 divide-primary-foreground">
+        <div className="flex-1 flex flex-col divide-y-2 divide-primary-foreground overflow-hidden">
           <div className="relative flex-1 p-6 pb-0 flex flex-col">
             <div className="flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4">
-              <p className="text-orange-100 text-sm break-all">
+              <p className="text-orange-100 text-sm break-words">
                 <RenderText text={content} />
               </p>
             </div>
             <div className="w-full justify-end flex">
-              <div className="mt-[-12px] flex flex-wrap gap-x-2 mr-[-24px] rounded-tl-md px-2 pb-2">
+              <div className="mt-[-12px] flex flex-row-reverse flex-wrap gap-2 mr-[-24px] rounded-tl-md px-2 pb-2">
                 {removeDuplicates(
                   tags.filter((t) => t[0] === "t").map((t) => t[1])
                 ).map((t) => (
