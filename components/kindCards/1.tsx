@@ -5,7 +5,12 @@ import {
   RxThickArrowUp,
   RxThickArrowDown,
 } from "react-icons/rx";
-import { cn, relativeTimeUnix, formatCount } from "@/lib/utils";
+import {
+  cn,
+  relativeTimeUnix,
+  formatCount,
+  removeDuplicates,
+} from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MenuButton } from "../menuButton";
 import {
@@ -16,67 +21,35 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { RenderText } from "../textRendering";
+import ProfileHeader from "./components/ProfileHeader";
+import { type Event } from "nostr-tools";
+import useQueryParams from "@/lib/hooks/useQueryParams";
 
-type KindCardProps = {
-  title?: string;
-  content: string;
-  timestamp: number;
+type KindCardProps = Event<number> & {
   clickable?: boolean;
 };
 
 export default function KindCard({
-  title,
+  pubkey,
   content,
-  timestamp,
+  created_at,
   clickable,
+  tags,
+  kind,
 }: KindCardProps) {
   const [active, setActive] = useState("UP");
   const [activeScore, setActiveScore] = useState(0);
+  const { queryParams, setQueryParams } = useQueryParams<{
+    t?: string | string[];
+  }>();
   return (
     <Card className={cn("overflow-hidden w-full", clickable && "theme-shadow")}>
-      {!!title && (
-        <CardHeader className="py-2 px-3">
-          <div className="flex justify-between flex-row items-center">
-            <div className="flex-1 center gap-x-2 pr-3">
-              <Avatar className="border h-[25px] w-[25px] bg-accent/60">
-                <AvatarImage className="bg-transparent" src={undefined} />
-                <AvatarFallback className="bg-transparent text-[11px] leading-5 uppercase">
-                  {title.at(0)}
-                </AvatarFallback>
-              </Avatar>
-              <CardTitle className="font-normal text-primary-foreground/80 line-clamp-1 break-all">
-                {title}
-              </CardTitle>
-              {/* <p className="line-clamp-1 break-all">{title}</p> */}
-            </div>
-            <div className="shrink-0">
-              <MenuButton
-                align="end"
-                options={[
-                  {
-                    label: "View profile",
-                    onSelect: () => {
-                      console.log("Report");
-                    },
-                  },
-                  {
-                    label: "Report",
-                    onSelect: () => {
-                      console.log("Report");
-                    },
-                  },
-                ]}
-              >
-                <button className="text-primary-foreground hover:text-accent center">
-                  <RxDotsHorizontal className="h-5 w-5" />
-                </button>
-              </MenuButton>
-            </div>
-          </div>
-        </CardHeader>
-      )}
+      <CardHeader className="py-2 px-3">
+        <ProfileHeader pubkey={pubkey} />
+      </CardHeader>
+
       <CardContent className="p-0 flex divide-x-2 divide-primary-foreground">
         {/* Actions */}
         <div className="w-12 shrink-0 flex items-center flex-col">
@@ -126,17 +99,48 @@ export default function KindCard({
 
         {/* Content */}
         <div className="flex-1 flex flex-col divide-y-2 divide-primary-foreground">
-          <div className="flex-1 p-6">
-            <div className="bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4">
+          <div className="relative flex-1 p-6 pb-0 flex flex-col">
+            <div className="flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4">
               <p className="text-orange-100 text-sm break-all">
                 <RenderText text={content} />
               </p>
             </div>
+            <div className="w-full justify-end flex">
+              <div className="mt-[-12px] flex flex-wrap gap-x-2 mr-[-24px] rounded-tl-md px-2 pb-2">
+                {removeDuplicates(
+                  tags.filter((t) => t[0] === "t").map((t) => t[1])
+                ).map((t) => (
+                  <Badge
+                    variant={
+                      queryParams.getAll("t").includes(t) ? "accent" : "default"
+                    }
+                    className="rounded-fll cursor-pointer font-medium"
+                    onClick={() =>
+                      setQueryParams((prev, obj) => {
+                        if (prev.getAll("t").includes(t)) {
+                          return {
+                            ...obj,
+                            t: [...prev.getAll("t").filter((el) => el !== t)],
+                          };
+                        } else {
+                          if (prev.has("t")) {
+                            return { ...obj, t: [...prev.getAll("t"), t] };
+                          }
+                          return { ...obj, t: t };
+                        }
+                      })
+                    }
+                  >
+                    {`#${t}`}
+                  </Badge>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="flex justify-between px-3 py-1.5 text-xs">
             <div className="">
-              <p>test</p>
-              <p>{relativeTimeUnix(timestamp)}</p>
+              <p>{`Kind ${kind}`}</p>
+              <p>{relativeTimeUnix(created_at)}</p>
             </div>
           </div>
         </div>

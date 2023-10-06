@@ -6,10 +6,13 @@ export default function useEvents() {
   const now = useRef(new Date());
   const { events } = useNostrEvents({
     filter: {
-      since: dateToUnix(now.current),
+      //   since: dateToUnix(now.current),
       kinds: [1],
+      limit: 100,
+      "#t": ["jets"],
     },
   });
+  // onEvent((event) => addPubkey(event.pubkey));
 
   return { events };
 }

@@ -94,3 +94,21 @@ export function cleanUrl(url?: string) {
   }
   return url;
 }
+
+export function truncateText(text: string, size?: number) {
+  let length = size ?? 5;
+  return text.slice(0, length) + "..." + text.slice(-length);
+}
+
+export function removeDuplicates<T>(data: T[], key?: keyof T) {
+  if (key) {
+    const unique = data.filter((obj, index) => {
+      return index === data.findIndex((o) => obj[key] === o[key]);
+    });
+    return unique;
+  } else {
+    return data.filter((obj, index) => {
+      return index === data.findIndex((o) => obj === o);
+    });
+  }
+}
