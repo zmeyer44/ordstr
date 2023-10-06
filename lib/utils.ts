@@ -112,3 +112,12 @@ export function removeDuplicates<T>(data: T[], key?: keyof T) {
     });
   }
 }
+
+export async function copyText(text: string) {
+  return await navigator.clipboard.writeText(text);
+}
+export function formatNumber(number: number) {
+  if (typeof number === "number") {
+    return number.toLocaleString("en-US");
+  } else return "not a number";
+}

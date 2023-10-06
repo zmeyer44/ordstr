@@ -1,6 +1,7 @@
 "use client";
 import useEvents from "@/lib/hooks/useEvents";
 import KindCard from "@/components/kindCards/1";
+import DefaultKindCard from "@/components/kindCards/default";
 import { createEvent } from "@/lib/actions/create";
 import { Button } from "@/components/ui/button";
 import { useNostr } from "nostr-react";
@@ -34,7 +35,7 @@ export default function Feed() {
         if (e.kind === 1) {
           return <KindCard key={e.id} {...e} />;
         }
-        return null;
+        return <DefaultKindCard key={e.id} {...e} />;
       })}
     </div>
   );

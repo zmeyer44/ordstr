@@ -10,7 +10,7 @@ export default function Home() {
   const { publish } = useNostr();
 
   return (
-    <div className="pt-10">
+    <div className="py-10">
       {/* <Button
         onClick={() =>
           void createEvent(
