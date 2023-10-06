@@ -58,7 +58,7 @@ export default function Leaflet({
       >
         <div
           className={cn(
-            "rounded-t-4xl -mb-1 flex h-7 w-full items-center justify-center"
+            "rounded-t-4xl -mb-1 flex h-5 w-full pt-3 justify-center"
           )}
         >
           <div className="-mr-1 h-1 w-6 rounded-full bg-primary transition-all group-active:rotate-12" />

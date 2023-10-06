@@ -18,16 +18,20 @@ export default function Template({ title, children, className }: ModalProps) {
   return (
     <div
       className={cn(
-        "relative w-full grow bg-background pt-1 p-4 md:rounded-lg md:pt-5 md:p-6 md:border-2 max-md:pb-14",
+        "z-10 relative w-full grow bg-background md:rounded-lg md:pt-4 md:border-2 pb-14 md:pb-5",
+        "pt-0",
         className
       )}
+      //   className={
+      //     "relative w-full pt-0 grow p-4 md:rounded-lg md:pt-5 md:p-6 md:border-2 pb-14 md:pb-5"
+      //   }
     >
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-3 mt-[-6px] px-4 pb-2 flex items-center justify-between border-b-2">
         <h1
           style={{
             fontFamily: '"DM Sans", sans-serif',
           }}
-          className="font-title text-xl font-semibold text-primary-foreground"
+          className="text-xl font-medium text-primary-foreground"
         >
           {title}
         </h1>
@@ -38,7 +42,7 @@ export default function Template({ title, children, className }: ModalProps) {
           <HiX className="h-5 w-5" />
         </button>
       </div>
-      {children}
+      <div className="p-6">{children}</div>
     </div>
   );
 }

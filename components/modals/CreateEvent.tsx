@@ -36,7 +36,7 @@ export default function CreateEventModal() {
   }
 
   return (
-    <Template title="Create Event" className="md:pt-5 md:max-w-[400px]">
+    <Template title="Create Event" className=" md:max-w-[400px]">
       <div className="flex flex-col gap-y-5">
         <Textarea
           ref={textAreaRef}
@@ -48,7 +48,7 @@ export default function CreateEventModal() {
           onChange={(e) => {
             setInput(e.target.value);
           }}
-          rows={2}
+          rows={1}
           className="min-h-[42px] min-w-[300p]"
         />
         <Button onClick={() => void handleSubmit()} loading={isLoading}>
