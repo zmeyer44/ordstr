@@ -1,3 +1,4 @@
+"use client";
 import { RxDotsHorizontal } from "react-icons/rx";
 import useProfile from "@/lib/hooks/useProfile";
 import { MenuButton } from "@/components/menuButton";

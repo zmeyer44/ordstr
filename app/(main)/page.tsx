@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div className="pt-10">
-      <Button
+      {/* <Button
         onClick={() =>
           void createEvent(
             {
@@ -27,7 +27,7 @@ export default function Home() {
         }
       >
         Set metadata
-      </Button>
+      </Button> */}
       <div className="max-w-[600px] px-4 sm:px-10 md:px-10 mx-auto">
         <Feed />
       </div>

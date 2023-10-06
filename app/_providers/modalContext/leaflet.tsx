@@ -45,7 +45,7 @@ export default function Leaflet({
       <motion.div
         ref={leafletRef}
         key="leaflet"
-        className="group fixed inset-x-0 bottom-0 z-modal max-h-[95vh] w-screen cursor-grab rounded-t-[10px] bg-[#070707] pb-5 active:cursor-grabbing sm:hidden standalone:pb-8"
+        className="group fixed inset-x-0 bottom-0 z-modal max-h-[95vh] w-screen cursor-grab rounded-t-[10px] bg-background border-2 border-b-0 pb-5 active:cursor-grabbing sm:hidden standalone:pb-8"
         initial={{ y: "100%" }}
         animate={controls}
         exit={{ y: "100%" }}
@@ -61,8 +61,8 @@ export default function Leaflet({
             "rounded-t-4xl -mb-1 flex h-7 w-full items-center justify-center"
           )}
         >
-          <div className="-mr-1 h-1 w-6 rounded-full bg-[#636363] transition-all group-active:rotate-12" />
-          <div className="h-1 w-6 rounded-full bg-[#636363] transition-all group-active:-rotate-12" />
+          <div className="-mr-1 h-1 w-6 rounded-full bg-primary transition-all group-active:rotate-12" />
+          <div className="h-1 w-6 rounded-full bg-primary transition-all group-active:-rotate-12" />
         </div>
         <div className="max-h-[calc(95vh_-_28px)] w-full overflow-y-auto scrollbar-track-gray-900 scrollbar-thumb-gray-900">
           {children}
