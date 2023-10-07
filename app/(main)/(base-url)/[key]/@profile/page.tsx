@@ -5,21 +5,26 @@ import { toast } from "react-hot-toast";
 import useProfile from "@/lib/hooks/useProfile";
 import { nip19 } from "nostr-tools";
 import Spinner from "@/components/spinner";
+import Feed from "@/containers/Feed";
 
 type ProfilePageProps = {
   params: { key: string };
 };
 
 export default function ProfilePage({ params: { key } }: ProfilePageProps) {
-  const { data } = nip19.decode(
-    "npub1zach44xjpc4yyhx6pgse2cj2pf98838kja03dv2e8ly8lfr094vqvm5dy5"
-  );
-  console.log("nip data", data);
-  const { user } = useProfile(data);
+  const { data } = nip19.decode(key);
+  console.log("nip data", data.toString());
+
+  const { user } = useProfile(data.toString());
 
   return (
-    <div className="flex flex-col items-center justify-between screen-container gap-y-4 py-10">
+    <div className="flex flex-col items-center justify-between screen-container gap-y-6 py-10">
       <MediumProfileCard pubkey={key} user={user} />
+      <Feed
+        filter={{
+          authors: [data.toString()],
+        }}
+      />
     </div>
   );
 }

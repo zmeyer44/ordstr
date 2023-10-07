@@ -6,26 +6,20 @@ import { createEvent } from "@/lib/actions/create";
 import { Button } from "@/components/ui/button";
 import { useNostr } from "nostr-react";
 import Spinner from "@/components/spinner";
+import { type Filter } from "nostr-tools";
 
 // import useEvent, {
 //   useEventsStore as useEvents,
 // } from "@/lib/hooks/useEventsCustom";
-export default function Feed() {
-  const { events, isLoading } = useEvents();
-  const { publish } = useNostr();
-  //   useEvent();
-  function handleCreateEvent() {
-    void createEvent(
-      {
-        content: "Hello world",
-        kind: 1,
-        tags: [],
-      },
-      publish
-    );
-  }
+
+type FeedProps = {
+  filter?: Filter;
+};
+export default function Feed({ filter }: FeedProps) {
+  const { events, isLoading } = useEvents({ filter });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {isLoading && !events.length && (
         <div className="center">
           <Spinner />
