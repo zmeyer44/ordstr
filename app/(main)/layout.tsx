@@ -16,7 +16,6 @@ export default function RootLayout({
         <Footer />
       </main>
       <BottomNav />
-      {/* <NewEventButton /> */}
     </div>
   );
 }

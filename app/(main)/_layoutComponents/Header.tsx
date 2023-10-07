@@ -1,4 +1,7 @@
 import Link from "next/link";
+
+import AccountButton from "./AccountButton";
+
 export default function Header() {
   return (
     <div className="z-header sticky top-0 inset-x-0 flex flex-col items-stretch transition-all">
@@ -14,11 +17,7 @@ export default function Header() {
               </h1>
             </Link>
             <div className="grow"></div>
-            <button className="px-6 md:px-8 hover:bg-primary/40">
-              <h2 className="text-primary-foreground uppercase font-bold">
-                Log In
-              </h2>
-            </button>
+            <AccountButton />
           </div>
         </header>
       </div>

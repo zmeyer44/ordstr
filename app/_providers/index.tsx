@@ -7,6 +7,10 @@ import TRPCProvider from "./trpc";
 import { ModalProvider } from "./modalContext/provider";
 import useRouteChange from "@/lib/hooks/useRouteChange";
 import NostrProvider from "./nostrProvider";
+import KeysProvider from "./keysProvider";
+import RelayProvider from "./relayProvider";
+import ProfilesProvider from "./profilesProvider";
+import ProfileProvider from "./profileProvider";
 // import useServiceWorker from "~/hooks/useServiceWorker";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -22,26 +26,33 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <>
       <NostrProvider>
         <TRPCProvider>
-          <ModalProvider>{children}</ModalProvider>
-          {/* {children} */}
+          {/* <RelayProvider> */}
+          <ProfilesProvider>
+            <ProfileProvider>
+              <KeysProvider>
+                <ModalProvider>{children}</ModalProvider>
+              </KeysProvider>
+            </ProfileProvider>
+          </ProfilesProvider>
+          {/* </RelayProvider> */}
+          <Toaster
+            toastOptions={{
+              className: "bg-gray-900 text-gray-200",
+              style: {
+                zIndex: 9999,
+                background: "#1f2937",
+                color: "#22d3ee",
+              },
+              success: {
+                iconTheme: {
+                  primary: "#22d3ee",
+                  secondary: "#f97316",
+                },
+              },
+            }}
+          />
         </TRPCProvider>
       </NostrProvider>
-      <Toaster
-        toastOptions={{
-          className: "bg-gray-900 text-gray-200",
-          style: {
-            zIndex: 9999,
-            background: "#030712",
-            color: "#e5e7eb",
-          },
-          success: {
-            iconTheme: {
-              primary: "bg-primary",
-              secondary: "bg-foreground",
-            },
-          },
-        }}
-      />
     </>
   );
 }

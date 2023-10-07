@@ -5,6 +5,7 @@ import { MenuButton } from "@/components/menuButton";
 import { CardTitle } from "@/components/ui/card";
 import { truncateText } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import Link from "next/link";
 
 export default function ProfileHeader({ pubkey }: { pubkey: string }) {
   const { user } = useProfile(pubkey);
@@ -17,9 +18,11 @@ export default function ProfileHeader({ pubkey }: { pubkey: string }) {
             {user?.display_name ? user?.display_name.at(0) : pubkey.at(0)}
           </AvatarFallback>
         </Avatar>
-        <CardTitle className="font-normal text-primary-foreground/80 tracking-normal line-clamp-1 break-all">
-          {user?.display_name ?? truncateText(pubkey)}
-        </CardTitle>
+        <Link href={`/${pubkey}`} className="hover:underline">
+          <CardTitle className="font-normal text-primary-foreground/80 tracking-normal line-clamp-1 break-all">
+            {user?.display_name ?? truncateText(pubkey)}
+          </CardTitle>
+        </Link>
       </div>
       <div className="shrink-0">
         <MenuButton

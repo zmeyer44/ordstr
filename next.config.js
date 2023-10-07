@@ -8,6 +8,9 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    domains: ["t2.gstatic.com"],
+  },
 };
 
 module.exports = nextConfig;

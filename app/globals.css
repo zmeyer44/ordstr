@@ -74,6 +74,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  .screen-container {
+    @apply px-4 md:px-10 max-w-7xl;
+  }
 }
 @layer components {
   .center {
