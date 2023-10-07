@@ -9,7 +9,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ["t2.gstatic.com"],
+    domains: ["t2.gstatic.com", "www.google.com"],
   },
 };
 

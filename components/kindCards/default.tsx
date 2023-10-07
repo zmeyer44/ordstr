@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   RxDotsHorizontal,
   RxThickArrowUp,
@@ -35,9 +35,20 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
   const { pubkey, content, created_at, tags, kind } = props;
   const [active, setActive] = useState("UP");
   const [activeScore, setActiveScore] = useState(0);
+  const [showFull, setShowFull] = useState(false);
+  const [expandButton, setExpandButton] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   const { queryParams, setQueryParams } = useQueryParams<{
     t?: string | string[];
   }>();
+
+  useEffect(() => {
+    if (contentRef.current) {
+      if (contentRef.current.scrollHeight > 350) {
+        setExpandButton(true);
+      }
+    }
+  }, [contentRef.current]);
   return (
     <Card className={cn("overflow-hidden w-full", clickable && "theme-shadow")}>
       <CardHeader className="py-2 px-3">
@@ -94,10 +105,30 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
         {/* Content */}
         <div className="flex-1 flex flex-col divide-y-2 divide-primary-foreground overflow-hidden">
           <div className="relative flex-1 p-6 pb-0 flex flex-col">
-            <div className="flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4">
+            <div
+              ref={contentRef}
+              className={cn(
+                "relative flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4 overflow-hidden",
+                showFull ? "max-h-none" : "max-h-[400px]"
+              )}
+            >
               <pre className="text-orange-100 text-sm break-words whitespace-pre-wrap">
                 {JSON.stringify(props, undefined, 2)}
               </pre>
+              {!showFull && expandButton && (
+                <div className="absolute inset-x-0 bottom-0 z-20">
+                  <div className="mb-[-30px] h-[30px] w-full bg-gradient-to-b from-transparent to-background"></div>
+                  <div className="h-[30px] w-full bg-gradient-to-b from-transparent to-accent/20"></div>
+                  <button
+                    onClick={() => setShowFull(true)}
+                    className="relative center w-full bg-background h-[40px] text-sm text-text transition-all hover:text-primary"
+                  >
+                    <div className="absolute inset-0 bg-accent/20 flex items-end justify-center pb-2.5">
+                      Show more
+                    </div>
+                  </button>
+                </div>
+              )}
             </div>
             <div className="w-full justify-end flex">
               <div className="mt-[-12px] flex flex-row-reverse flex-wrap gap-2 mr-[-24px] rounded-tl-md px-2 pb-2">
