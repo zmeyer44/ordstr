@@ -114,7 +114,7 @@ export default function KindCard({
             <div
               ref={contentRef}
               className={cn(
-                "flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4 overflow-hidden",
+                "relative flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4 overflow-hidden",
                 showFull ? "max-h-none" : "max-h-[400px]"
               )}
             >

@@ -29,7 +29,11 @@ export default function Home() {
         Set metadata
       </Button> */}
       <div className="max-w-[600px] px-4 sm:px-10 md:px-10 mx-auto">
-        <Feed />
+        <Feed
+          filter={{
+            kinds: [1],
+          }}
+        />
       </div>
     </div>
   );

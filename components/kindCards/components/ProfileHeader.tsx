@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import Image from "next/image";
 import { RxDotsHorizontal } from "react-icons/rx";
 import useProfile from "@/lib/hooks/useProfile";
 import { MenuButton } from "@/components/menuButton";
@@ -9,6 +11,8 @@ import Link from "next/link";
 
 export default function ProfileHeader({ pubkey }: { pubkey: string }) {
   const { user } = useProfile(pubkey);
+  const [showFaviconImage, setShowFaviconImage] = useState(true);
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex-1 flex items-center gap-x-2 pr-3">
@@ -18,10 +22,29 @@ export default function ProfileHeader({ pubkey }: { pubkey: string }) {
             {user?.display_name ? user?.display_name.at(0) : pubkey.at(0)}
           </AvatarFallback>
         </Avatar>
-        <Link href={`/${pubkey}`} className="hover:underline">
+        <Link href={`/${pubkey}`} className="hover:underline flex items-center">
           <CardTitle className="font-normal text-primary-foreground/80 tracking-normal line-clamp-1 break-all">
             {user?.display_name ?? truncateText(pubkey)}
           </CardTitle>
+          {!!user?.nip05 && (
+            <div className="center gap-x-2">
+              <span className="mb-1 text-sm font-light text-accent lg:text-[16px]">
+                {user.nip05}
+              </span>
+              {showFaviconImage && (
+                <Image
+                  alt={user.nip05.split("@").at(-1) as string}
+                  src={`https://www.google.com/s2/favicons?domain=${user.nip05
+                    .split("@")
+                    .at(-1)}&size=128`}
+                  height={16}
+                  width={16}
+                  className="rounded-sm object-contain"
+                  onError={() => setShowFaviconImage(false)}
+                />
+              )}
+            </div>
+          )}
         </Link>
       </div>
       <div className="shrink-0">
