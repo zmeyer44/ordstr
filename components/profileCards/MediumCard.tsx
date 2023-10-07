@@ -74,9 +74,9 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
                   {showFaviconImage && (
                     <Image
                       alt={user.nip05.split("@").at(-1) as string}
-                      src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://${user.nip05
+                      src={`https://www.google.com/s2/favicons?domain=${user.nip05
                         .split("@")
-                        .at(-1)}&size=32`}
+                        .at(-1)}&size=128`}
                       height={16}
                       width={16}
                       className="rounded-sm object-contain"
