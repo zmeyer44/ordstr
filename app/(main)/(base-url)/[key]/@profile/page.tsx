@@ -15,14 +15,7 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
     "npub1zach44xjpc4yyhx6pgse2cj2pf98838kja03dv2e8ly8lfr094vqvm5dy5"
   );
   console.log("nip data", data);
-  const { user, isLoading } = useProfile(data);
-  if (isLoading) {
-    return (
-      <div className="py-10 center w-full">
-        <Spinner />
-      </div>
-    );
-  }
+  const { user } = useProfile(data);
 
   return (
     <div className="flex flex-col items-center justify-between screen-container gap-y-4 py-10">

@@ -42,3 +42,38 @@ export async function createEvent(
     alert("An error has occured");
   }
 }
+export async function createReaction(
+  content: "+" | "-",
+  event: {
+    id: string;
+    pubkey: string;
+  },
+  publish: (event: NostrEvent<number>) => void
+) {
+  return createEvent(
+    {
+      content,
+      kind: 7,
+      tags: [
+        ["e", event.id],
+        ["p", event.pubkey],
+      ],
+    },
+    publish
+  );
+}
+
+export async function deleteEvent(
+  events: [["e", string] | ["a", `${number}:${string}:${string}`]],
+  publish: (event: NostrEvent<number>) => void,
+  reason?: string
+) {
+  return createEvent(
+    {
+      kind: 5,
+      content: reason ?? "",
+      tags: events,
+    },
+    publish
+  );
+}
