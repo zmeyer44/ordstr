@@ -19,7 +19,7 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
   console.log("USer", user);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
   return (
-    <Card className="rounded-xl w-full @container">
+    <Card className="rounded-xl w-full @container flex">
       <div className="relative max-h-[150px] overflow-hidden">
         <div className="relative bg-background pb-[80px] sm:pb-[18%]">
           <div className="absolute inset-0 max-h-[150px] bg-accent/40"></div>

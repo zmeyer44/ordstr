@@ -39,7 +39,7 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
           </CardTitle>
           {!!user?.nip05 && (
             <div className="ml-1.5 center gap-x-1">
-              <span className="text-sm font-light text-accent lg:text-[16px]">
+              <span className="text-xs font-light text-accent lg:text-[16px]">
                 {user.nip05}
               </span>
               {showFaviconImage && (
