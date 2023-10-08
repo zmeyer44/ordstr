@@ -12,8 +12,8 @@ type ProfilePageProps = {
 };
 
 export default function ProfilePage({ params: { key } }: ProfilePageProps) {
-  const { data } = nip19.decode(key);
-  console.log("nip data", data.toString());
+  const { data, type } = nip19.decode(key);
+  console.log("nip data", data.toString(), type);
 
   const { user } = useProfile(data.toString());
 
