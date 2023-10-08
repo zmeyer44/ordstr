@@ -8,6 +8,7 @@ import { CardTitle } from "@/components/ui/card";
 import { truncateText } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
+import { nip19 } from "nostr-tools";
 
 type ProfileHeaderProps = {
   pubkey: string;
@@ -20,6 +21,7 @@ type ProfileHeaderProps = {
 
 export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
   const { user } = useProfile(pubkey);
+  const npub = nip19.npubEncode(pubkey);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
 
   return (
@@ -28,16 +30,16 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
         <Avatar className="border h-[25px] w-[25px] bg-accent/60">
           <AvatarImage className="bg-transparent" src={user?.picture} />
           <AvatarFallback className="bg-transparent text-[11px] leading-5 uppercase">
-            {user?.display_name ? user?.display_name.at(0) : pubkey.at(0)}
+            {user?.display_name ? user?.display_name.at(0) : npub.at(5)}
           </AvatarFallback>
         </Avatar>
-        <Link href={`/${pubkey}`} className="hover:underline flex items-center">
+        <Link href={`/${npub}`} className="hover:underline flex items-center">
           <CardTitle className="font-normal text-primary-foreground/80 tracking-normal line-clamp-1 break-all">
-            {user?.display_name ?? truncateText(pubkey)}
+            {user?.display_name ?? truncateText(npub)}
           </CardTitle>
           {!!user?.nip05 && (
-            <div className="center gap-x-2">
-              <span className="mb-1 text-sm font-light text-accent lg:text-[16px]">
+            <div className="ml-1.5 center gap-x-1">
+              <span className="text-sm font-light text-accent lg:text-[16px]">
                 {user.nip05}
               </span>
               {showFaviconImage && (

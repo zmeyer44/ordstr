@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { toast } from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import { RenderText } from "../textRendering";
 import ProfileHeader from "./components/ProfileHeader";
@@ -70,7 +71,7 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
               label: "Copy raw data",
               onSelect: () => {
                 void copyText(JSON.stringify(props));
-                console.log("Report");
+                toast.success("Copied Text!");
               },
             },
           ]}

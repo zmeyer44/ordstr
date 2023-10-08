@@ -45,7 +45,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               },
               success: {
                 iconTheme: {
-                  primary: "#f97316",
+                  primary: "#8d3201",
                   secondary: "#22d3ee",
                 },
               },
