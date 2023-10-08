@@ -34,7 +34,7 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
           </AvatarFallback>
         </Avatar>
         <Link href={`/${npub}`} className="hover:underline flex items-center">
-          <CardTitle className="font-normal text-primary-foreground/80 tracking-normal line-clamp-1 break-all">
+          <CardTitle className="font-normal text-primary-foreground/80 tracking-normal leading-normal line-clamp-1 break-all">
             {user?.display_name ?? truncateText(npub)}
           </CardTitle>
           {!!user?.nip05 && (
