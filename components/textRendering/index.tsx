@@ -1,14 +1,18 @@
 import { cleanUrl } from "@/lib/utils";
 import Link from "next/link";
+import ProfileMention from "./ProfileMention";
+import EventMention from "./EventMention";
+
 const RenderText = ({ text }: { text?: string }) => {
   if (!text) return null;
   const Elements: JSX.Element[] = [];
   const urlRegex =
     /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))/g;
   const hashtagRegex = /#\b\w+\b/g;
-  const usernameRegex = /(?:^|\s)\@(\w+)\b/g;
+  const nostrPrefixRegex = /nostr:[a-z0-9]+/g;
+  // const usernameRegex = /(?:^|\s)\@(\w+)\b/g;
   const combinedRegex = new RegExp(
-    `(${urlRegex.source}|${hashtagRegex.source}|${usernameRegex.source})`,
+    `(${urlRegex.source}|${hashtagRegex.source}|${nostrPrefixRegex.source})`,
     "g"
   );
   // Get Array of URLs
@@ -43,6 +47,13 @@ const RenderText = ({ text }: { text?: string }) => {
           </Link>
         );
         // specialElement = <span className="">{specialValuesArray[index]}</span>;
+      } else if (specialValuesArray[index]?.match(nostrPrefixRegex)) {
+        const mention = specialValuesArray[index]?.split(":")[1];
+        if (mention.startsWith("nprofile")) {
+          specialElement = <ProfileMention mention={mention} />;
+        } else if (mention.startsWith("nevent")) {
+          specialElement = <EventMention mention={mention} />;
+        }
       }
       if (specialElement) {
         Elements.push(specialElement);
