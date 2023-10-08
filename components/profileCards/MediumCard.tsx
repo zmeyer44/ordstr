@@ -16,24 +16,31 @@ type MediumCardProps = {
 };
 
 export default function MediumCard({ pubkey, user }: MediumCardProps) {
-  console.log("USer", user);
+  console.log("MediumCard", user);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
   return (
-    <Card className="rounded-xl w-full @container flex">
+    <Card className="relative w-full rounded-xl @container">
+      {/* <div className="absolute left-0 top-0 z-50">
+        <div className="h-4 w-4 bg-red-300 @sm:hidden" />
+        <div className="hidden h-4 w-4 bg-purple-300 @sm:block" />
+        <div className="hidden h-4 w-4 bg-blue-300 @md:block" />
+        <div className="hidden h-4 w-4 bg-green-300 @lg:block" />
+        <div className="hidden h-4 w-4 bg-yellow-300 @xl:block" />
+      </div> */}
       <div className="relative max-h-[150px] overflow-hidden">
-        <div className="relative bg-background pb-[80px] sm:pb-[18%]">
+        <div className="relative bg-background pb-[80px] @md:pb-[20%]">
           <div className="absolute inset-0 max-h-[150px] bg-accent/40"></div>
         </div>
       </div>
-      <div className="border-t-2 relative mt-[-1px] bg-background font-title text-primary-foreground">
+      <div className="font-title relative mt-[-1px] border-t-2 bg-background text-primary-foreground">
         {/* Top Row */}
-        <div className="flex items-start pb-[5px] lg:pb-[8px]">
+        <div className="flex items-start pb-[5px] @lg:pb-[6px]">
           {/* PFP */}
-          <div className="ml-[10px] mb-[1px] mt-[-40px] sm:mt-[-45px] sm:ml-[16px] md:ml-[24px] md:mt-[-50px] lg:mt-[-85px] xl:mt-[-95px]">
-            <div className="relative aspect-square w-[70px] overflow-hidden rounded-full bg-background sm:w-[75px] md:w-[100px] lg:w-[170px] xl:w-[190px]">
-              <Avatar className="border-2 h-full w-full bg-accent/60">
+          <div className="mb-[1px] ml-[10px] mt-[-40px] @sm:ml-[16px] @sm:mt-[-40px] @md:ml-[24px] @md:mt-[-47px] @lg:mt-[-50px] @2xl:mt-[-65px]">
+            <div className="relative aspect-square w-[70px] overflow-hidden rounded-full bg-background @sm:w-[75px] @md:w-[90px] @lg:w-[100px] @2xl:w-[120px]">
+              <Avatar className="h-full w-full border-2 bg-accent/60">
                 <AvatarImage className="bg-transparent" src={user?.picture} />
-                <AvatarFallback className="bg-transparent text-[24px] md:text-[32px] leading-5 uppercase">
+                <AvatarFallback className="bg-transparent text-[24px] uppercase leading-5 @md:text-[32px]">
                   {user?.display_name
                     ? user.display_name.at(0)
                     : user?.name?.at(0) ?? pubkey.at(0)}
@@ -58,17 +65,17 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
             </div>
           </div>
         </div>
-        <div className="space-y-3.5 lg:space-y-5 p-4 pt-0 sm:p-6 sm:pt-0 md:p-7 md:pt-2">
+        <div className="space-y-3.5 p-4 pt-0 @sm:p-6 @sm:pt-0 @md:p-6 @md:pt-2 @lg:space-y-5">
           {/* User Top Line Info */}
-          <div className="md:space-y-1.5 lg:space-y-2">
-            <div className="flex items-end gap-x-3">
-              <h1 className=" break-all text-2xl font-semibold text-text-strong line-clamp-1 lg:text-3xl">
+          <div className="@lg:space-y-1.5">
+            <div className="flex items-end gap-x-3 truncate">
+              <h1 className="text-lg font-semibold @md:text-xl  @lg:text-2xl">
                 {user?.display_name ?? user?.name ?? truncateText(pubkey)}
               </h1>
 
               {!!user?.nip05 && (
                 <div className="center gap-x-2">
-                  <span className="mb-1 text-sm font-light text-accent lg:text-[16px]">
+                  <span className="mb-1 truncate text-sm font-light text-accent @lg:text-[16px]">
                     {user.nip05}
                   </span>
                   {showFaviconImage && (
@@ -79,7 +86,7 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
                         .at(-1)}&size=128`}
                       height={16}
                       width={16}
-                      className="rounded-sm object-contain"
+                      className="shrink-0 rounded-sm object-contain"
                       onError={() => setShowFaviconImage(false)}
                     />
                   )}
@@ -88,13 +95,13 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
             </div>
             <div className="">
               <button
-                className="flex items-center break-all text-sm font-light text-text transition-colors hover:text-accent lg:text-[16px]"
+                className="flex items-center text-xs font-light transition-colors hover:text-accent @sm:text-sm @lg:text-[16px]"
                 onClick={() => {
                   void copyText(pubkey);
                   toast.success(`Copied npub`);
                 }}
               >
-                <p className="flex items-center break-all  line-clamp-1 ">
+                <p className="line-clamp-1 flex items-center  break-all ">
                   {truncateText(pubkey, 5)}
                 </p>
                 <MdContentCopy className="ml-1.5 h-3.5 w-3.5" />
@@ -103,8 +110,8 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
           </div>
 
           {/* About */}
-          <div className="max-w-lg md:w-3/4 lg:max-w-3xl">
-            <p className="text-[14px] font-light text-text-strong lg:text-[15px]">
+          <div className="max-w-lg @lg:max-w-3xl">
+            <p className="text-text-strong text-[14px] font-light @lg:text-[15px]">
               <RenderText text={user?.about ?? ""} />
             </p>
           </div>
