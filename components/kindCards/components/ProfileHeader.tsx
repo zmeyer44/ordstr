@@ -9,7 +9,16 @@ import { truncateText } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 
-export default function ProfileHeader({ pubkey }: { pubkey: string }) {
+type ProfileHeaderProps = {
+  pubkey: string;
+  actions: {
+    label: string;
+    className?: string | undefined;
+    onSelect: () => void;
+  }[];
+};
+
+export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
   const { user } = useProfile(pubkey);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
 
@@ -48,23 +57,7 @@ export default function ProfileHeader({ pubkey }: { pubkey: string }) {
         </Link>
       </div>
       <div className="shrink-0">
-        <MenuButton
-          align="end"
-          options={[
-            {
-              label: "View profile",
-              onSelect: () => {
-                console.log("Report");
-              },
-            },
-            {
-              label: "Report",
-              onSelect: () => {
-                console.log("Report");
-              },
-            },
-          ]}
-        >
+        <MenuButton align="end" options={actions}>
           <button className="text-primary-foreground hover:text-accent center">
             <RxDotsHorizontal className="h-5 w-5" />
           </button>

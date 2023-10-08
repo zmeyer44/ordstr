@@ -11,8 +11,6 @@ import {
   formatCount,
   removeDuplicates,
 } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { MenuButton } from "../menuButton";
 import {
   Card,
   CardContent,
@@ -26,19 +24,14 @@ import { RenderText } from "../textRendering";
 import ProfileHeader from "./components/ProfileHeader";
 import { type Event } from "nostr-tools";
 import useQueryParams from "@/lib/hooks/useQueryParams";
+import { copyText } from "@/lib/utils";
 
 type KindCardProps = Event<number> & {
   clickable?: boolean;
 };
 
-export default function KindCard({
-  pubkey,
-  content,
-  created_at,
-  clickable,
-  tags,
-  kind,
-}: KindCardProps) {
+export default function KindCard({ clickable, ...props }: KindCardProps) {
+  const { pubkey, content, created_at, tags, kind } = props;
   const [active, setActive] = useState("UP");
   const [activeScore, setActiveScore] = useState(0);
   const [showFull, setShowFull] = useState(false);
@@ -58,7 +51,30 @@ export default function KindCard({
   return (
     <Card className={cn("overflow-hidden w-full", clickable && "theme-shadow")}>
       <CardHeader className="py-2 px-3">
-        <ProfileHeader pubkey={pubkey} />
+        <ProfileHeader
+          pubkey={pubkey}
+          actions={[
+            {
+              label: "View profile",
+              onSelect: () => {
+                console.log("Report");
+              },
+            },
+            {
+              label: "Report",
+              onSelect: () => {
+                console.log("Report");
+              },
+            },
+            {
+              label: "Copy raw data",
+              onSelect: () => {
+                void copyText(JSON.stringify(props));
+                console.log("Report");
+              },
+            },
+          ]}
+        />
       </CardHeader>
 
       <CardContent className="p-0 flex divide-x-2 divide-primary-foreground">
