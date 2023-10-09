@@ -33,7 +33,7 @@ export default function Feed({ filter, className }: FeedProps) {
       {isLoading && !events.length && (
         <div className="center flex-col gap-y-4 pt-10">
           <Spinner />
-          <p className="font-medium text-primary">Fetching notes</p>
+          <p className="font-medium text-primary">Fetching notes...</p>
         </div>
       )}
       {events.map((e) => {

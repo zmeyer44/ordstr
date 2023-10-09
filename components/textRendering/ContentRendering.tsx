@@ -39,10 +39,11 @@ export default function ContentRendering({ url }: ContentRenderingProps) {
       );
     }
   }
+
   return (
     <a
       className="text-primary-foreground hover:underline"
-      href={cleanUrl(url)}
+      href={url}
       target="_blank"
       rel="noreferrer"
     >
