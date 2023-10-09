@@ -25,21 +25,21 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
   const [showFaviconImage, setShowFaviconImage] = useState(true);
 
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex-1 flex items-center gap-x-2 pr-3">
-        <Avatar className="border h-[25px] w-[25px] bg-accent/60">
+    <div className="flex items-center justify-between @container">
+      <div className="flex flex-1 items-center gap-x-2 pr-3">
+        <Avatar className="h-[25px] w-[25px] border bg-accent/60">
           <AvatarImage className="bg-transparent" src={user?.picture} />
-          <AvatarFallback className="bg-transparent text-[11px] leading-5 uppercase">
-            {user?.display_name ? user?.display_name.at(0) : npub.at(5)}
+          <AvatarFallback className="bg-transparent text-[11px] uppercase leading-5">
+            {user?.display_name?.at(0) ?? user?.name?.at(0) ?? npub.at(5)}
           </AvatarFallback>
         </Avatar>
-        <Link href={`/${npub}`} className="hover:underline flex items-center">
-          <CardTitle className="font-normal text-primary-foreground/80 tracking-normal leading-normal line-clamp-1 break-all">
-            {user?.display_name ?? truncateText(npub)}
+        <Link href={`/${npub}`} className="flex items-center hover:underline">
+          <CardTitle className="line-clamp-1 break-all font-normal leading-normal tracking-normal text-primary-foreground/80">
+            {user?.display_name ?? user?.name ?? truncateText(npub)}
           </CardTitle>
           {!!user?.nip05 && (
-            <div className="ml-1.5 center gap-x-1">
-              <span className="text-xs font-light text-accent lg:text-[16px]">
+            <div className="center ml-1.5 gap-x-1">
+              <span className="text-xs font-light text-accent @lg:text-sm">
                 {user.nip05}
               </span>
               {showFaviconImage && (
@@ -60,7 +60,7 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
       </div>
       <div className="shrink-0">
         <MenuButton align="end" options={actions}>
-          <button className="text-primary-foreground hover:text-accent center">
+          <button className="center text-primary-foreground hover:text-accent">
             <RxDotsHorizontal className="h-5 w-5" />
           </button>
         </MenuButton>

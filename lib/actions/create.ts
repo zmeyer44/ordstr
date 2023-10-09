@@ -7,14 +7,14 @@ import {
   eventsGenerator,
 } from "nostr-tools";
 import { dateToUnix } from "nostr-react";
-
+import { NostrService } from "@/lib/nostr";
 export async function createEvent(
   event: {
     content: string;
     kind: number;
     tags: string[][];
   },
-  publish: (event: NostrEvent<number>) => void
+  publish: (event: NostrEvent<number>) => void,
 ) {
   try {
     const pubkey = await window.nostr?.getPublicKey();
@@ -48,7 +48,7 @@ export async function createReaction(
     id: string;
     pubkey: string;
   },
-  publish: (event: NostrEvent<number>) => void
+  publish: (event: NostrEvent<number>) => void,
 ) {
   return createEvent(
     {
@@ -59,14 +59,32 @@ export async function createReaction(
         ["p", event.pubkey],
       ],
     },
-    publish
+    publish,
+  );
+}
+export async function createList(
+  publish: (event: NostrEvent<number>) => void,
+  title: string,
+  description?: string,
+) {
+  return createEvent(
+    {
+      content: "",
+      kind: 30001,
+      tags: [
+        ["name", title],
+        ["description", description ?? ""],
+        ["d", NostrService.randomId()],
+      ],
+    },
+    publish,
   );
 }
 
 export async function deleteEvent(
   events: [["e", string] | ["a", `${number}:${string}:${string}`]],
   publish: (event: NostrEvent<number>) => void,
-  reason?: string
+  reason?: string,
 ) {
   return createEvent(
     {
@@ -74,6 +92,6 @@ export async function deleteEvent(
       content: reason ?? "",
       tags: events,
     },
-    publish
+    publish,
   );
 }

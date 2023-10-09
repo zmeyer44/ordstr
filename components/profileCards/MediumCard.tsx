@@ -9,14 +9,16 @@ import { copyText, truncateText } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "@/types";
 import { RenderText } from "../textRendering";
+import { nip19 } from "nostr-tools";
 
 type MediumCardProps = {
   pubkey: string;
   user?: User;
+  actions?: { element: () => JSX.Element }[];
 };
 
-export default function MediumCard({ pubkey, user }: MediumCardProps) {
-  console.log("MediumCard", user);
+export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
+  const npub = nip19.npubEncode(pubkey);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
   return (
     <Card className="relative w-full rounded-xl @container">
@@ -29,7 +31,9 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
       </div> */}
       <div className="relative max-h-[150px] overflow-hidden">
         <div className="relative bg-background pb-[80px] @md:pb-[20%]">
-          <div className="absolute inset-0 max-h-[150px] bg-accent/40"></div>
+          <div className="absolute inset-0 max-h-[150px] bg-accent/40">
+            <img src={user?.banner} className="h-full w-full object-cover" />
+          </div>
         </div>
       </div>
       <div className="font-title relative mt-[-1px] border-t-2 bg-background text-primary-foreground">
@@ -43,12 +47,13 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
                 <AvatarFallback className="bg-transparent text-[24px] uppercase leading-5 @md:text-[32px]">
                   {user?.display_name
                     ? user.display_name.at(0)
-                    : user?.name?.at(0) ?? pubkey.at(0)}
+                    : user?.name?.at(0) ?? npub.at(0)}
                 </AvatarFallback>
               </Avatar>
             </div>
           </div>
           <div className="ml-auto flex items-center gap-x-3 py-2">
+            {actions?.map(({ element: Element }) => <Element />)}
             {/* {sessionData?.user?.ordinalsAddress === user.ordinalsAddress ? (
                 <Link
                   href="/settings/profile"
@@ -70,7 +75,7 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
           <div className="@lg:space-y-1.5">
             <div className="flex items-end gap-x-3 truncate">
               <h1 className="text-lg font-semibold @md:text-xl  @lg:text-2xl">
-                {user?.display_name ?? user?.name ?? truncateText(pubkey)}
+                {user?.display_name ?? user?.name ?? truncateText(npub)}
               </h1>
 
               {!!user?.nip05 && (
@@ -97,12 +102,12 @@ export default function MediumCard({ pubkey, user }: MediumCardProps) {
               <button
                 className="flex items-center text-xs font-light transition-colors hover:text-accent @sm:text-sm @lg:text-[16px]"
                 onClick={() => {
-                  void copyText(pubkey);
+                  void copyText(npub);
                   toast.success(`Copied npub`);
                 }}
               >
                 <p className="line-clamp-1 flex items-center  break-all ">
-                  {truncateText(pubkey, 5)}
+                  {truncateText(npub, 5)}
                 </p>
                 <MdContentCopy className="ml-1.5 h-3.5 w-3.5" />
               </button>

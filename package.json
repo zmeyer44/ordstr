@@ -37,6 +37,7 @@
     "superjson": "^1.13.3",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "websocket-polyfill": "^0.0.3",
     "zod": "^3.22.4",
     "zustand": "^4.4.3"
   },

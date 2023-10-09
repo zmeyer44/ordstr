@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { cleanUrl } from "@/lib/utils";
 import useCacheFetch from "@/lib/hooks/useCacheFetch";
 type ContentRenderingProps = {
@@ -14,10 +15,18 @@ export default function ContentRendering({ url }: ContentRenderingProps) {
   if (data) {
     if (data.type === "image") {
       return (
-        <img
-          src={url}
+        // <img
+        //   src={url}
+        //   alt="Image"
+        //   className="pixelart my-2 h-full max-h-full w-[200px] max-w-[300px] rounded-xl object-cover"
+        // />
+        <Image
           alt="Image"
-          className="pixelart my-2 h-full w-full max-w-[300px] rounded-xl object-cover"
+          height="288"
+          width="288"
+          src={data.data}
+          unoptimized
+          className="translate mt-2 cursor-pointer rounded-lg object-cover transition hover:scale-105 "
         />
       );
     } else if (data.type === "link") {

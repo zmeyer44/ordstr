@@ -1,4 +1,4 @@
-import "websocket-polyfill";
+// import "websocket-polyfill";
 import sha256 from "crypto-js/sha256";
 import Hex from "crypto-js/enc-hex";
 import { getTagValues } from "./utils";
@@ -80,7 +80,7 @@ export namespace NostrService {
           (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
         ).toString(16),
       )
-      .slice(0, 8);
+      .slice(0, 8) as string;
   }
 
   export function filterBlogEvents(eventArray: Event[]) {

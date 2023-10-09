@@ -63,3 +63,16 @@ const test = {
     ],
   ],
 };
+
+const createGenericList = {
+  created_at: 1696862051,
+  content: "",
+  tags: [
+    ["name", "Generic list"],
+    ["description", "Creating a generic list description"],
+    ["d", "yo76jve131e6o750"],
+  ],
+  kind: 30001,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "eb38a6dd5f04c0559d3b1ba3cb16dd852049f762bd0554bf72e5df7d094da6a1",
+};
