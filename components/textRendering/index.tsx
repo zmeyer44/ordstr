@@ -2,6 +2,7 @@ import { cleanUrl } from "@/lib/utils";
 import Link from "next/link";
 import ProfileMention from "./ProfileMention";
 import EventMention from "./EventMention";
+import ContentRendering from "./ContentRendering";
 
 const RenderText = ({ text }: { text?: string }) => {
   if (!text) return null;
@@ -13,7 +14,7 @@ const RenderText = ({ text }: { text?: string }) => {
   // const usernameRegex = /(?:^|\s)\@(\w+)\b/g;
   const combinedRegex = new RegExp(
     `(${urlRegex.source}|${hashtagRegex.source}|${nostrPrefixRegex.source})`,
-    "g"
+    "g",
   );
   // Get Array of URLs
   const specialValuesArray = text.match(combinedRegex);
@@ -27,21 +28,22 @@ const RenderText = ({ text }: { text?: string }) => {
     let specialElement;
     if (specialValuesArray?.length && specialValuesArray.length > index) {
       if (specialValuesArray[index]?.match(urlRegex)) {
-        specialElement = (
-          <a
-            className="text-primary-foreground hover:underline"
-            href={cleanUrl(specialValuesArray[index])}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {cleanUrl(specialValuesArray[index])}
-          </a>
-        );
+        // specialElement = (
+        //   <a
+        //     className="text-primary-foreground hover:underline"
+        //     href={cleanUrl(specialValuesArray[index])}
+        //     target="_blank"
+        //     rel="noreferrer"
+        //   >
+        //     {cleanUrl(specialValuesArray[index])}
+        //   </a>
+        // );
+        specialElement = <ContentRendering url={specialValuesArray[index]} />;
         // specialElement = <span>{cleanUrl(specialValuesArray[index])}</span>;
       } else if (specialValuesArray[index]?.match(hashtagRegex)) {
         specialElement = (
           <Link href={`/?t=${specialValuesArray[index]?.substring(1)}`}>
-            <span className="text-primary-foreground hover:underline">
+            <span className="break-words text-primary-foreground hover:underline">
               {specialValuesArray[index]}
             </span>
           </Link>

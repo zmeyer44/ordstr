@@ -49,8 +49,8 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
     }
   }, [contentRef.current]);
   return (
-    <Card className={cn("overflow-hidden w-full", clickable && "theme-shadow")}>
-      <CardHeader className="py-2 px-3">
+    <Card className={cn("w-full overflow-hidden", clickable && "theme-shadow")}>
+      <CardHeader className="px-3 py-2">
         <ProfileHeader
           pubkey={pubkey}
           actions={[
@@ -77,9 +77,9 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
         />
       </CardHeader>
 
-      <CardContent className="p-0 flex divide-x-2 divide-primary-foreground">
+      <CardContent className="flex divide-x-2 divide-primary-foreground p-0">
         {/* Actions */}
-        <div className="w-12 shrink-0 flex items-center flex-col">
+        <div className="flex w-12 shrink-0 flex-col items-center">
           <div className="group relative flex w-full flex-col items-stretch overflow-hidden">
             <button
               onClick={(e) => {
@@ -90,7 +90,7 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
                 active === "UP"
                   ? "text-accent-foreground hover:bg-accent/20 hover:text-accent"
                   : "text-primary-foreground hover:bg-primary/40 hover:text-cyan-300",
-                "center py-3 pb-2 transition-all"
+                "center py-3 pb-2 transition-all",
               )}
             >
               <RxThickArrowUp className="h-6 w-6 " />
@@ -104,7 +104,7 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
                 active === "DOWN"
                   ? "text-accent-foreground hover:bg-accent/20 hover:text-accent"
                   : "text-primary-foreground hover:bg-primary/40 hover:text-cyan-300",
-                "center py-3 pt-2 transition-all"
+                "center py-3 pt-2 transition-all",
               )}
             >
               <RxThickArrowDown className="h-6 w-6" />
@@ -115,7 +115,7 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
                   active === "UP"
                     ? "text-accent-foreground group-hover:text-accent"
                     : "text-primary-foreground group-hover:text-gray-200",
-                  "text-xs transition-all"
+                  "text-xs transition-all",
                 )}
               >
                 {formatCount(activeScore)}
@@ -125,16 +125,16 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col divide-y-2 divide-primary-foreground overflow-hidden">
-          <div className="relative flex-1 p-6 pb-0 flex flex-col">
+        <div className="flex flex-1 flex-col divide-y-2 divide-primary-foreground overflow-hidden">
+          <div className="relative flex flex-1 flex-col p-6 pb-0">
             <div
               ref={contentRef}
               className={cn(
-                "relative flex-1 mb-6 bg-accent/20 border-dashed border-accent border-2 rounded-xl p-4 overflow-hidden",
-                showFull ? "max-h-none" : "max-h-[400px]"
+                "relative mb-6 flex-1 overflow-hidden rounded-xl border-2 border-dashed border-accent bg-accent/20 p-4",
+                showFull ? "max-h-none" : "max-h-[400px]",
               )}
             >
-              <pre className="text-orange-100 text-sm break-words whitespace-pre-wrap">
+              <pre className="whitespace-pre-wrap break-words text-sm text-orange-100">
                 {JSON.stringify(props, undefined, 2)}
               </pre>
               {!showFull && expandButton && (
@@ -143,19 +143,19 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
                   <div className="h-[30px] w-full bg-gradient-to-b from-transparent to-accent/20"></div>
                   <button
                     onClick={() => setShowFull(true)}
-                    className="relative center w-full bg-background h-[40px] text-sm text-text transition-all hover:text-primary"
+                    className="center text-text relative h-[40px] w-full bg-background text-sm transition-all hover:text-primary"
                   >
-                    <div className="absolute inset-0 bg-accent/20 flex items-end justify-center pb-2.5">
+                    <div className="absolute inset-0 flex items-end justify-center bg-accent/20 pb-2.5">
                       Show more
                     </div>
                   </button>
                 </div>
               )}
             </div>
-            <div className="w-full justify-end flex">
-              <div className="mt-[-12px] flex flex-row-reverse flex-wrap gap-2 mr-[-24px] rounded-tl-md px-2 pb-2">
+            <div className="flex w-full justify-end">
+              <div className="mr-[-24px] mt-[-12px] flex flex-row-reverse flex-wrap gap-2 rounded-tl-md px-2 pb-2">
                 {removeDuplicates(
-                  tags.filter((t) => t[0] === "t").map((t) => t[1])
+                  tags.filter((t) => t[0] === "t").map((t) => t[1]),
                 ).map((t) => (
                   <Badge
                     key={t}

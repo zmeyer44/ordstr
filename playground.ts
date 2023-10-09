@@ -39,3 +39,27 @@ const eventJson = {
   id: "3bfa778939b08ff0a4a5306ee7d4aeecc798a768d551ebc1a859791060d9b5d0",
   sig: "275467152c74e1cb98add84d853c3245b7f6b1780f329faec9a1a070c7a3f27213221d723eb558ebeb3961bcd070d41923b657544458e58791c5f09fcc045acf",
 };
+
+const test = {
+  content:
+    " https://image.nostr.build/f7e7a2f996b7129b859e89c4e64d1dc11b94cc9e7dd634ef68ac1fcbf74c5b63.jpg ",
+  created_at: 1696776554,
+  id: "c5ec2885c88d3db5cc5a67f61cda1d8b0f45e167157954838bda82d9eeea0915",
+  kind: 1,
+  pubkey: "6a02b7d5d5c1ceec3d0ad28dd71c4cfeebb6397b95fef5cd5032c9223a13d02a",
+  sig: "0026c7adc156c6d8171d987e6bc1a8986d741b78c392974482c2fe0c878c9427c337fbd6b7bd2a8c04023c61d7c4d0c42f7d3d827f79c51ed04502b1a3953e78",
+  tags: [
+    ["e", "34361099c7cda48b44174a920df2455d6dfe8634d87067e535d2af33c0393c9f"],
+    ["p", "adfe27560472d5168c79e82071f12f7b6039cd94ba664e54a855c37c80f1d737"],
+    [
+      "imeta",
+      "url https://image.nostr.build/f7e7a2f996b7129b859e89c4e64d1dc11b94cc9e7dd634ef68ac1fcbf74c5b63.jpg",
+      "blurhash e6S~x6.6IC%LRjx?ICtLM|a#4VtMD*ocafoeRkk7RkRj9FRjbEWBM{",
+      "dim 750x1334",
+    ],
+    [
+      "r",
+      "https://image.nostr.build/f7e7a2f996b7129b859e89c4e64d1dc11b94cc9e7dd634ef68ac1fcbf74c5b63.jpg",
+    ],
+  ],
+};

@@ -91,6 +91,11 @@ module.exports = {
         modal: 998,
         top: 999,
       },
+      flex: {
+        2: 2,
+        3: 3,
+        4: 4,
+      },
     },
   },
   plugins: [

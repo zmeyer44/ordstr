@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/card";
 import { toast } from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
-import { RenderText } from "../textRendering";
 import ProfileHeader from "./components/ProfileHeader";
 import { type Event } from "nostr-tools";
 import useQueryParams from "@/lib/hooks/useQueryParams";
@@ -44,7 +43,7 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
 
   useEffect(() => {
     if (contentRef.current) {
-      if (contentRef.current.scrollHeight > 350) {
+      if (contentRef.current.scrollHeight > 240) {
         setExpandButton(true);
       }
     }
@@ -70,7 +69,7 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
             {
               label: "Copy raw data",
               onSelect: () => {
-                void copyText(JSON.stringify(props));
+                copyText(JSON.stringify(props));
                 toast.success("Copied Text!");
               },
             },
@@ -79,52 +78,6 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
       </CardHeader>
 
       <CardContent className="flex divide-x-2 divide-primary-foreground p-0">
-        {/* Actions */}
-        <div className="flex w-12 shrink-0 flex-col items-center">
-          <div className="group relative flex w-full flex-col items-stretch overflow-hidden">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.nativeEvent.preventDefault();
-              }}
-              className={cn(
-                active === "UP"
-                  ? "text-accent-foreground hover:bg-accent/20 hover:text-accent"
-                  : "text-primary-foreground hover:bg-primary/40 hover:text-cyan-300",
-                "center py-3 pb-2 transition-all",
-              )}
-            >
-              <RxThickArrowUp className="h-6 w-6 " />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.nativeEvent.preventDefault();
-              }}
-              className={cn(
-                active === "DOWN"
-                  ? "text-accent-foreground hover:bg-accent/20 hover:text-accent"
-                  : "text-primary-foreground hover:bg-primary/40 hover:text-cyan-300",
-                "center py-3 pt-2 transition-all",
-              )}
-            >
-              <RxThickArrowDown className="h-6 w-6" />
-            </button>
-            <div className="center pointer-events-none absolute inset-x-0 top-1/2 w-full -translate-y-1/2 transform">
-              <span
-                className={cn(
-                  active === "UP"
-                    ? "text-accent-foreground group-hover:text-accent"
-                    : "text-primary-foreground group-hover:text-gray-200",
-                  "text-xs transition-all",
-                )}
-              >
-                {formatCount(activeScore)}
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* Content */}
         <div className="flex flex-1 flex-col divide-y-2 divide-primary-foreground overflow-hidden">
           <div className="relative flex flex-1 flex-col p-6 pb-0">
@@ -132,12 +85,12 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
               ref={contentRef}
               className={cn(
                 "relative mb-6 flex-1 overflow-hidden rounded-xl border-2 border-dashed border-accent bg-accent/20 p-4",
-                showFull ? "max-h-none" : "max-h-[400px]",
+                showFull ? "max-h-none" : "max-h-[250px]",
               )}
             >
-              <p className="break-words text-sm text-orange-100">
-                <RenderText text={content} />
-              </p>
+              <pre className="overflow-x-hidden whitespace-pre-wrap break-all text-sm text-orange-100">
+                {JSON.stringify(props, undefined, 2)}
+              </pre>
               {!showFull && expandButton && (
                 <div className="absolute inset-x-0 bottom-0 z-20">
                   <div className="mb-[-30px] h-[30px] w-full bg-gradient-to-b from-transparent to-background"></div>
@@ -187,10 +140,8 @@ export default function KindCard({ clickable, ...props }: KindCardProps) {
             </div>
           </div>
           <div className="flex justify-between px-3 py-1.5 text-xs">
-            <div className="">
-              <p>{`Kind ${kind}`}</p>
-              <p>{relativeTimeUnix(created_at)}</p>
-            </div>
+            <p>{`Kind ${kind}`}</p>
+            <p>{relativeTimeUnix(created_at)}</p>
           </div>
         </div>
       </CardContent>
