@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import MediumProfileCard from "@/components/profileCards/MediumCard";
 import Link from "next/link";
@@ -16,7 +17,7 @@ import { useNostrEvents } from "nostr-react";
 import { Kind } from "@/lib/nostr";
 import { z } from "zod";
 import ListHeader from "./_components/ListHeader";
-import { getTagsValues } from "@/lib/nostr/utils";
+import { getTagsValues, getTagValues } from "@/lib/nostr/utils";
 const AddrSchema = z.object({
   identifier: z.string(),
   kind: z.number(),
@@ -44,19 +45,19 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
     onDone,
   } = useNostrEvents({
     filter: {
-      ["#d"]: [identifier],
       kinds: [30001],
       authors: [pubkey],
-      limit: 1,
     },
-    enabled: mounted,
   });
   useEffect(() => {
     setMounted(true);
   }, []);
 
   onDone(() => {
-    const foundList = lists[0];
+    console.log("LISTs", lists, pubkey, identifier);
+    const foundList = lists.filter(
+      (l) => getTagValues("d", l.tags) === identifier,
+    )[0];
     if (foundList) {
       setList(foundList);
     }
