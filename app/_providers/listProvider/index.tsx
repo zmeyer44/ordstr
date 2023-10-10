@@ -28,7 +28,8 @@ type ListsContextProps = {
   deletions: Set<string>;
   sortedLists: NDKList[];
   sortedListWithKind: (kinds: number[]) => NDKList[];
-  getLists: (pubkey: string) => NDKSubscription | void;
+  getLists: (pubkey: string, filter?: NDKFilter) => NDKSubscription | void;
+  getListsFromFilter: (filter: NDKFilter) => NDKSubscription | void;
   loading: boolean;
 };
 const ListsContext = createContext<ListsContextProps | undefined>(undefined);
@@ -129,7 +130,7 @@ export default function ListsProvider({
     return !requestedDeletions.has(event.tagId());
   }
 
-  function getLists(pubkey: string) {
+  function getLists(pubkey: string, filter?: NDKFilter) {
     if (!loading) {
       setLoading(true);
     }
@@ -137,6 +138,7 @@ export default function ListsProvider({
       {
         kinds: [...(NDKListKinds as number[])],
         authors: [pubkey],
+        ...filter,
       },
       {
         closeOnEose: false,
@@ -200,6 +202,7 @@ export default function ListsProvider({
         sortedLists,
         sortedListWithKind,
         loading,
+        getListsFromFilter,
       }}
     >
       {children}

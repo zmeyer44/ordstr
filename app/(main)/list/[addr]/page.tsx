@@ -16,7 +16,7 @@ import ListHeader from "./_components/ListHeader";
 import { getTagsValues, getTagValues } from "@/lib/nostr/utils";
 import { useLists } from "@/app/_providers/listProvider";
 import { NDKList, NDKUser } from "@nostr-dev-kit/ndk";
-
+import useUserLists from "@/lib/hooks/useUserLists";
 const AddrSchema = z.object({
   identifier: z.string(),
   kind: z.number(),
@@ -28,30 +28,17 @@ type ListPageProps = {
 };
 
 export default function ListPage({ params: { addr } }: ListPageProps) {
-  const [loading, setLoading] = useState(false);
   const { data } = nip19.decode(addr);
   const addrData = AddrSchema.parse(data);
-  const { lists, getLists } = useLists()!;
   const pubkey = addrData.pubkey;
-  useEffect(() => {
-    setLoading(true);
-    const sub = getLists(pubkey);
-    if (sub) {
-      sub.on("eose", () => setLoading(false));
-    }
-    return () => {
-      if (sub) {
-        sub.stop();
-      }
-    };
-  }, []);
+  const { lists, isLoading } = useUserLists({ pubkey });
   const keys = useKeys();
   const modal = useModal();
   const list = lists.get(
     `${addrData.kind}:${addrData.pubkey}:${addrData.identifier}`,
   );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="center py-10">
         <Spinner />

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { truncateText } from "@/lib/utils";
-import { nip19, type Event } from "nostr-tools";
+import { nip19 } from "nostr-tools";
 import Spinner from "../spinner";
 import { getTagValues } from "@/lib/nostr/utils";
 import { RxChevronRight, RxPlus } from "react-icons/rx";
@@ -12,7 +12,9 @@ import useProfile from "@/lib/hooks/useProfile";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import CreateList from "@/components/modals/CreateList";
 import { useModal } from "@/app/_providers/modalContext/provider";
-import { useNostrEvents } from "nostr-react";
+import useUserLists from "@/lib/hooks/useUserLists";
+import { NostrEvent } from "@nostr-dev-kit/ndk";
+import { Kind } from "@/lib/nostr";
 
 type ListContainerProps = {
   pubkey: string;
@@ -22,11 +24,8 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
   const { user } = useProfile(pubkey);
   const { currentUser } = useCurrentUser();
   const npub = nip19.npubEncode(pubkey);
-  const { events, isLoading } = useNostrEvents({
-    filter: {
-      kinds: [30001],
-      authors: [pubkey],
-    },
+  const { sortedLists, isLoading } = useUserLists({
+    pubkey,
   });
 
   return (
@@ -53,11 +52,13 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
             </div>
           )}
           <ul className="divide-y">
-            {events.map((e) => (
-              <EventListItem key={e.id} event={e} />
-            ))}
+            {sortedLists
+              .filter((l) => l.kind === Kind.GenericList)
+              .map((e) => (
+                <EventListItem key={e.id} event={e.rawEvent()} />
+              ))}
           </ul>
-          {!isLoading && events.length === 0 && (
+          {!isLoading && sortedLists.length === 0 && (
             <div className="center py-3 text-sm text-primary">
               <p className="">No lists found</p>
             </div>
@@ -69,7 +70,7 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
 }
 
 type EventListItemProps = {
-  event: Event<number>;
+  event: NostrEvent;
 };
 function EventListItem({ event }: EventListItemProps) {
   const name =
