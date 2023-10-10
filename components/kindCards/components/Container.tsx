@@ -1,16 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, ReactNode } from "react";
-import {
-  RxDotsHorizontal,
-  RxThickArrowUp,
-  RxThickArrowDown,
-} from "react-icons/rx";
-import {
-  cn,
-  relativeTimeUnix,
-  formatCount,
-  removeDuplicates,
-} from "@/lib/utils";
+import { cn, relativeTimeUnix, removeDuplicates } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -21,11 +11,12 @@ import {
 } from "@/components/ui/card";
 import { toast } from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
-import { RenderText } from "../../textRendering";
 import ProfileHeader from "./ProfileHeader";
 import { type Event } from "nostr-tools";
 import useQueryParams from "@/lib/hooks/useQueryParams";
 import { copyText } from "@/lib/utils";
+
+import ScoreSection from "./ScoreSection";
 
 type ContainerProps = Event<number> & {
   clickable?: boolean;
@@ -37,9 +28,8 @@ export default function KindCard({
   children,
   ...props
 }: ContainerProps) {
-  const { pubkey, content, created_at, tags, kind } = props;
-  const [active, setActive] = useState("UP");
-  const [activeScore, setActiveScore] = useState(0);
+  const { pubkey, content, created_at, tags, kind, id } = props;
+
   const [showFull, setShowFull] = useState(false);
   const [expandButton, setExpandButton] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -86,48 +76,7 @@ export default function KindCard({
       <CardContent className="flex divide-x-2 divide-primary-foreground p-0">
         {/* Actions */}
         <div className="flex w-12 shrink-0 flex-col items-center">
-          <div className="group relative flex w-full flex-col items-stretch overflow-hidden">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.nativeEvent.preventDefault();
-              }}
-              className={cn(
-                active === "UP"
-                  ? "text-accent-foreground hover:bg-accent/20 hover:text-accent"
-                  : "text-primary-foreground hover:bg-primary/40 hover:text-cyan-300",
-                "center py-3 pb-2 transition-all",
-              )}
-            >
-              <RxThickArrowUp className="h-6 w-6 " />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.nativeEvent.preventDefault();
-              }}
-              className={cn(
-                active === "DOWN"
-                  ? "text-accent-foreground hover:bg-accent/20 hover:text-accent"
-                  : "text-primary-foreground hover:bg-primary/40 hover:text-cyan-300",
-                "center py-3 pt-2 transition-all",
-              )}
-            >
-              <RxThickArrowDown className="h-6 w-6" />
-            </button>
-            <div className="center pointer-events-none absolute inset-x-0 top-1/2 w-full -translate-y-1/2 transform">
-              <span
-                className={cn(
-                  active === "UP"
-                    ? "text-accent-foreground group-hover:text-accent"
-                    : "text-primary-foreground group-hover:text-gray-200",
-                  "text-xs transition-all",
-                )}
-              >
-                {formatCount(activeScore)}
-              </span>
-            </div>
-          </div>
+          <ScoreSection id={id} pubkey={pubkey} />
         </div>
         {/* Content */}
         <div className="flex flex-1 flex-col divide-y-2 divide-primary-foreground overflow-hidden">

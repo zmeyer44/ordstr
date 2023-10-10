@@ -9,6 +9,9 @@ import Feed from "@/containers/Feed";
 import ListContainer from "@/components/listContainer";
 import { Button } from "@/components/ui/button";
 import { useKeys } from "@/app/_providers/keysProvider";
+import EditProfile from "@/components/modals/EditProfile";
+import { useModal } from "@/app/_providers/modalContext/provider";
+
 type ProfilePageProps = {
   params: { key: string };
 };
@@ -16,6 +19,7 @@ type ProfilePageProps = {
 export default function ProfilePage({ params: { key } }: ProfilePageProps) {
   const { data, type } = nip19.decode(key);
   const keys = useKeys();
+  const modal = useModal();
   console.log("nip data", data.toString(), type);
   const pubkey = data.toString();
 
@@ -29,7 +33,18 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
           user={user}
           actions={
             keys?.keys.pubkey === pubkey
-              ? [{ element: () => <Button size="sm">Edit</Button> }]
+              ? [
+                  {
+                    element: () => (
+                      <Button
+                        size="sm"
+                        onClick={() => modal?.show(<EditProfile user={user} />)}
+                      >
+                        Edit
+                      </Button>
+                    ),
+                  },
+                ]
               : []
           }
         />

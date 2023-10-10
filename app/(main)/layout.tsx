@@ -9,9 +9,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-[100svh] w-screen flex flex-col">
+    <div className="max-w-screen relative flex min-h-[100svh] w-full flex-col overflow-x-hidden">
       <Header />
-      <main className="flex-1 flex flex-col">
+      <main className="flex flex-1 flex-col">
         <div className="flex-1">{children}</div>
         <Footer />
       </main>

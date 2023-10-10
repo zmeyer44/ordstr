@@ -28,16 +28,20 @@ export function MenuButton({ children, align, options }: MenuButtonProps) {
         {options.map((option, idx) => (
           <>
             <DropdownMenuItem
+              key={idx}
               className={cn(
-                "focus:bg-accent/20 cursor-pointer",
-                option.className
+                "cursor-pointer focus:bg-accent/20",
+                option.className,
               )}
               onSelect={option.onSelect}
             >
               {option.label}
             </DropdownMenuItem>
             {idx !== options.length - 1 && (
-              <DropdownMenuSeparator className="bg-primary-foreground" />
+              <DropdownMenuSeparator
+                key={`sep-${idx}`}
+                className="bg-primary-foreground"
+              />
             )}
           </>
         ))}

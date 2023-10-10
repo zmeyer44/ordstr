@@ -76,3 +76,56 @@ const createGenericList = {
   pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
   id: "eb38a6dd5f04c0559d3b1ba3cb16dd852049f762bd0554bf72e5df7d094da6a1",
 };
+
+const listrCreateList = {
+  created_at: 1696882406,
+  content: "",
+  tags: [
+    ["title", "Bookmark list"],
+    ["description", "List of bookmarks"],
+    ["d", "listr-3a56600b-e60e-442c-8190-56f0efdce99f"],
+    ["L", "lol.listr.ontology"],
+    ["l", "Books & Literature"],
+  ],
+  kind: 30001,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "93741233108e699874c2dc0828326d5e701fe5a6e4384e1b1658b11c6fcf80f8",
+};
+
+const anonListElement = {
+  created_at: 1696865950,
+  content: "",
+  tags: [
+    ["name", "New generic list"],
+    ["description", "generic list"],
+    ["d", "jg0qrmz4q0wpdj56"],
+    ["e", "86a20d0a9b3d2b70998d70a4efd43cc15a9ed22ad1c5df1c25d99eaee5ec7bc9"],
+  ],
+  kind: 30001,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "581355f9e730fb2d6d69c9b19084adc0510d34057ec77bb7c3dccb2f0b80eb56",
+  sig: "e28341e43131abb981d267b3df32374b79cf1a9f9522ef26f4a2ed86803841d0baa6fc9881a425863350846e5abbd143c10a6839a408a06acecd5e404901c4f0",
+};
+const anonListSecond = {
+  created_at: 1696866015,
+  content:
+    "BESw6swGHIil4zbGjFb/fNHGa1/pUDle+f4SV5emJJm/0F+7hFnvLslQgF5m/p2Aema/Ws3j0hCUHbQOrqo7Q3jJp2P+83XQZNs84rMqF4PAu4+4MAX2A0WM/cO6ioRlocHQily/KvbjpS2MaHjKzGWJeWF+PDoMhvmNno5bDzaZxyY8dt2cwlxfYudACH/9mTxpl1ucOZBVQNZe0ep1PzukBmarodqcma/XC745lp47N4jjYy9YjI/jrESVONsXpuC6ianPUVf5TmtELd8O2w==?iv=6f3a+8R53VAnX2YbPvMZfA==",
+  tags: [
+    ["p", "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58"],
+    ["client", "atlas"],
+    ["e", "ba60ecc097bc75d7f934f484e9f4d34d6b5b928b441a86bb88e3369e8b269c02"],
+  ],
+  kind: 2600,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "5167d7d9ebd7e221b53d2434785b0cbb1a18a82163ae461ca1fd5f4a78e4cbc5",
+};
+
+const resultJson = {
+  created_at: 1696865950,
+  content: "Anon list element",
+  tags: [["client", "highlighter"]],
+  kind: 1,
+  pubkey: "c7f4581848eb29f5e212acbbcc952f9b9505bfb86f82c41716e250b4a36fa0cb",
+  id: "86a20d0a9b3d2b70998d70a4efd43cc15a9ed22ad1c5df1c25d99eaee5ec7bc9",
+  sig: "b557bfc40e07181e0e8f96c6f2d7adfa4f0e41d961654c1a0b1dff6c66d2bbea27bc64174754a53f07873db64bd2a41e4e649c06be5e77adccecabd31decf127",
+};

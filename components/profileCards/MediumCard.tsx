@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card, CardTitle } from "@/components/ui/card";
-import useProfile from "@/lib/hooks/useProfile";
 import { MdContentCopy } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { copyText, truncateText } from "@/lib/utils";

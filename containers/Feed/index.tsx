@@ -9,25 +9,13 @@ import { cn } from "@/lib/utils";
 import Spinner from "@/components/spinner";
 import { type Filter } from "nostr-tools";
 
-// import useEvent, {
-//   useEventsStore as useEvents,
-// } from "@/lib/hooks/useEventsCustom";
-
 type FeedProps = {
   filter?: Filter;
   className?: string;
 };
 export default function Feed({ filter, className }: FeedProps) {
   const { events, isLoading } = useEvents({ filter });
-
-  // return (
-  //   <div className="center w-full bg-red-500">
-  //     <div className="center">
-  //       <Spinner />
-  //     </div>
-  //   </div>
-  // );
-
+  // return null;
   return (
     <div className={cn("w-full space-y-6", className)}>
       {isLoading && !events.length && (

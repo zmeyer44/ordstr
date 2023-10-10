@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { RxPlus } from "react-icons/rx";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
 import {
   RiHomeFill,
   RiHomeLine,
@@ -20,6 +21,7 @@ import {
 } from "react-icons/ri";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import CreateEventModal from "@/components/modals/CreateEvent";
+import FormModal from "@/components/modals/FormModal";
 export default function BottomNav() {
   const pathname = usePathname();
   const modal = useModal();
@@ -103,31 +105,43 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed sm:hidden bottom-0 left-0 right-0 z-header-">
-      <div className="flex justify-end pb-6 px-10">
+    <nav className="fixed bottom-0 left-0 right-0 z-header- sm:hidden">
+      <div className="flex justify-end px-10 pb-6">
         <div
           className={cn(
-            `relative h-12 bg-background-gray border-2 flex flex-row-reverse items-center rounded-full transition-all cursor-pointer`,
-            menuOpen ? "w-full" : "w-12 center"
+            `relative flex h-12 cursor-pointer flex-row-reverse items-center rounded-full border-2 bg-background-gray transition-all`,
+            menuOpen ? "w-full" : "center w-12",
           )}
         >
           <div
             ref={newContentBtnRef}
             onClick={() => {
-              modal?.show(<CreateEventModal />);
+              // modal?.show(<CreateEventModal />);
+              modal?.show(
+                <FormModal
+                  cta={{ text: "Create" }}
+                  onSubmit={(data) => console.log("Data submitted", data)}
+                  fields={[{ label: "Title", slug: "title", type: "input" }]}
+                  defaultValues={{}}
+                  formSchema={z.object({
+                    title: z.string(),
+                  })}
+                  title="Create List"
+                />,
+              );
               setMenuOpen(false);
             }}
             className={cn(
-              "absolute center bg-accent-foreground text-black rounded-full -z-10 transition-all shadow-md cursor-pointer",
+              "center absolute -z-10 cursor-pointer rounded-full bg-accent-foreground text-black shadow-md transition-all",
               menuOpen
-                ? "bottom-16 right-0 w-12 h-12"
-                : "bottom-4 right-3 w-4 h-4"
+                ? "bottom-16 right-0 h-12 w-12"
+                : "bottom-4 right-3 h-4 w-4",
             )}
           >
             <RxPlus
               className={cn(
-                "w-7 h-7 transition-transform pointer-events-none",
-                menuOpen ? "rotate-180" : "rotate-0"
+                "pointer-events-none h-7 w-7 transition-transform",
+                menuOpen ? "rotate-180" : "rotate-0",
               )}
             />
           </div>
@@ -215,8 +229,8 @@ export default function BottomNav() {
           />
           <RxPlus
             className={cn(
-              "absolute text-primary-foreground w-6 h-6 transition-transform pointer-events-none",
-              menuOpen ? "rotate-0 hidden" : "rotate-180"
+              "pointer-events-none absolute h-6 w-6 text-primary-foreground transition-transform",
+              menuOpen ? "hidden rotate-0" : "rotate-180",
             )}
           />
 
@@ -224,9 +238,9 @@ export default function BottomNav() {
             ref={bottomTabsRef}
             className={cn(
               menuOpen
-                ? "opacity-100 delay-200 h-full"
-                : "w-0 h-0 opacity-0 overflow-hidden",
-              "w-full flex transition-opacity divide-x-2 divide-primary-foreground"
+                ? "h-full opacity-100 delay-200"
+                : "h-0 w-0 overflow-hidden opacity-0",
+              "flex w-full divide-x-2 divide-primary-foreground transition-opacity",
             )}
           >
             {currentUser
@@ -235,7 +249,7 @@ export default function BottomNav() {
                     href={tab.path}
                     key={index}
                     className={cn(
-                      "flex-1 flex flex-col items-center justify-center hover:bg-primary/40"
+                      "flex flex-1 flex-col items-center justify-center hover:bg-primary/40",
                     )}
                   >
                     <button>
@@ -249,7 +263,7 @@ export default function BottomNav() {
                         </div>
                       )}
                       {tab.alerts ? (
-                        <div className="absolute -top-1 ml-5 min-w-[22px] min-h-[22px] p-1 bg-accent-foreground center rounded-full text-xs text-white">
+                        <div className="center absolute -top-1 ml-5 min-h-[22px] min-w-[22px] rounded-full bg-accent-foreground p-1 text-xs text-white">
                           <span className="leading-tight">{tab.alerts}</span>
                         </div>
                       ) : null}
@@ -261,7 +275,7 @@ export default function BottomNav() {
                     key={index}
                     href={tab.path}
                     className={cn(
-                      "flex-1 flex flex-col items-center justify-center hover:bg-primary/40"
+                      "flex flex-1 flex-col items-center justify-center hover:bg-primary/40",
                     )}
                   >
                     <div>

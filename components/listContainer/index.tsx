@@ -6,30 +6,45 @@ import { truncateText } from "@/lib/utils";
 import { nip19, type Event } from "nostr-tools";
 import Spinner from "../spinner";
 import { getTagValues } from "@/lib/nostr/utils";
-import { RxChevronRight } from "react-icons/rx";
+import { RxChevronRight, RxPlus } from "react-icons/rx";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useProfile from "@/lib/hooks/useProfile";
+import useCurrentUser from "@/lib/hooks/useCurrentUser";
+import CreateList from "@/components/modals/CreateList";
+import { useModal } from "@/app/_providers/modalContext/provider";
+import { useNostrEvents } from "nostr-react";
 
 type ListContainerProps = {
   pubkey: string;
 };
 export default function ListContainer({ pubkey }: ListContainerProps) {
+  const modal = useModal();
   const { user } = useProfile(pubkey);
-
+  const { currentUser } = useCurrentUser();
   const npub = nip19.npubEncode(pubkey);
-  const { events, isLoading } = useEvents({
+  const { events, isLoading } = useNostrEvents({
     filter: {
       kinds: [30001],
       authors: [pubkey],
     },
   });
+
   return (
     <Card className="bg-background">
-      <CardHeader>
+      <CardHeader className="flex h-[43px] flex-row items-center justify-between space-y-0 py-2">
         <CardTitle>{`${
           user?.display_name ?? user?.name ?? truncateText(npub)
         }'s Lists`}</CardTitle>
+        {currentUser?.pubkey === pubkey && (
+          <button
+            onClick={() => modal?.show(<CreateList />)}
+            className="center  -mr-2 h-[30px] w-[30px] rounded-full hover:bg-accent/20"
+          >
+            <RxPlus className="h-5 w-5" />
+          </button>
+        )}
       </CardHeader>
+
       <CardContent className="p-0">
         <>
           {isLoading && (
@@ -52,7 +67,8 @@ type EventListItemProps = {
   event: Event<number>;
 };
 function EventListItem({ event }: EventListItemProps) {
-  const name = getTagValues("name", event.tags);
+  const name =
+    getTagValues("name", event.tags) ?? getTagValues("title", event.tags);
   const description = getTagValues("description", event.tags);
   const picture = getTagValues("picture", event.tags);
   const identifier = getTagValues("d", event.tags);
@@ -68,7 +84,7 @@ function EventListItem({ event }: EventListItemProps) {
         <Avatar className="h-[30px] w-[30px] rounded-md border bg-accent/60">
           <AvatarImage className="bg-transparent" src={picture} />
           <AvatarFallback className="bg-transparent text-[11px] uppercase leading-5">
-            {name.at(0)}
+            {name?.at(0)}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-auto">

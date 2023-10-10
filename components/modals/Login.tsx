@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useNostr } from "nostr-react";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { useKeys } from "@/app/_providers/keysProvider";
+import { nip19 } from "nostr-tools";
 
 export default function LoginModal() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +26,8 @@ export default function LoginModal() {
 
       if (shouldReconnect === "true") {
         const publicKey = await window.nostr.getPublicKey();
-        // console.log("public key", publicKey);
-        keys?.setKeys({ privkey: "", pubkey: publicKey });
+        console.log("public key", publicKey);
+        keys?.setKeys({ privkey: "", pubkey: nip19.npubEncode(publicKey) });
       }
 
       if (typeof window.webln === "undefined") {
@@ -53,7 +54,7 @@ export default function LoginModal() {
     setIsLoading(true);
     if (typeof window.nostr !== "undefined") {
       const publicKey = await window.nostr.getPublicKey();
-      // console.log("public key", publicKey);
+      console.log("public key", publicKey);
       keys?.setKeys({ privkey: "", pubkey: publicKey });
       localStorage.setItem("shouldReconnect", "true");
     }

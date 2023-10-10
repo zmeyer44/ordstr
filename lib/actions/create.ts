@@ -30,7 +30,6 @@ export async function createEvent(
       ...unsignedEvent,
       id: getEventHash(unsignedEvent),
     };
-    console.log("Unsigned", unsignedEventWithId);
 
     const eventToPublish: NostrEvent =
       await window.nostr.signEvent(unsignedEventWithId);

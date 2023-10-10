@@ -11,7 +11,7 @@ type ContentRenderingProps = {
 
 export default function ContentRendering({ url }: ContentRenderingProps) {
   const { data, isLoading } = useCacheFetch({ url });
-  console.log("Content rendering", url, data);
+  //   console.log("Content rendering", url, data);
   if (data) {
     if (data.type === "image") {
       return (
