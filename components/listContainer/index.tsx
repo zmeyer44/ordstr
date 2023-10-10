@@ -54,7 +54,7 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
           )}
           <ul className="divide-y">
             {events.map((e) => (
-              <EventListItem event={e} />
+              <EventListItem key={e.id} event={e} />
             ))}
           </ul>
         </>
