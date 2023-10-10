@@ -8,7 +8,7 @@ import { cn, formatCount } from "@/lib/utils";
 import { useNostrEvents } from "nostr-react";
 import { Kind } from "@/lib/nostr";
 import { createReaction, deleteEvent } from "@/lib/actions/create";
-import { useNostr } from "nostr-react";
+import { useNDK } from "@/app/_providers/ndkProvider";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 type ScoreSectionProps = {
   id: string;
@@ -19,7 +19,7 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
   const { currentUser } = useCurrentUser();
   const [active, setActive] = useState("UP");
   const [mounted] = useState(true);
-  const { publish } = useNostr();
+  const { ndk } = useNDK();
 
   const { events: reactionEvents } = useNostrEvents({
     filter: {
@@ -46,16 +46,12 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
   async function handleVote(voteType: "+" | "-") {
     if (score.userAction !== undefined) {
       // Delete previous vote
-      await deleteEvent([["e", score.userAction.id]], publish);
+      await deleteEvent(ndk!, [["e", score.userAction.id]]);
     }
-    await createReaction(
-      voteType,
-      {
-        id: id,
-        pubkey,
-      },
-      publish,
-    );
+    await createReaction(ndk!, voteType, {
+      id: id,
+      pubkey,
+    });
   }
   return (
     <div className="group relative flex w-full flex-col items-stretch overflow-hidden">

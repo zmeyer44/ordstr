@@ -15,9 +15,10 @@ import ProfileHeader from "./ProfileHeader";
 import { type Event } from "nostr-tools";
 import useQueryParams from "@/lib/hooks/useQueryParams";
 import { copyText } from "@/lib/utils";
-
+import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import ScoreSection from "./ScoreSection";
-
+import { deleteEvent } from "@/lib/actions/create";
+import { useNDK } from "@/app/_providers/ndkProvider";
 type ContainerProps = Event<number> & {
   clickable?: boolean;
   children: ReactNode;
@@ -28,8 +29,9 @@ export default function KindCard({
   children,
   ...props
 }: ContainerProps) {
+  const { ndk } = useNDK();
   const { pubkey, content, created_at, tags, kind, id } = props;
-
+  const { currentUser } = useCurrentUser();
   const [showFull, setShowFull] = useState(false);
   const [expandButton, setExpandButton] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -69,6 +71,21 @@ export default function KindCard({
                 toast.success("Copied Text!");
               },
             },
+            ...(currentUser?.pubkey === pubkey
+              ? [
+                  {
+                    label: "Delete Note",
+                    onSelect: () => {
+                      deleteEvent(ndk!, [["e", id]])
+                        .then((r) => {
+                          toast.success("Event deleted");
+                          window.location.reload();
+                        })
+                        .catch((e) => toast.error("An error occured"));
+                    },
+                  },
+                ]
+              : []),
           ]}
         />
       </CardHeader>

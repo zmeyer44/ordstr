@@ -5,7 +5,7 @@ import { useNDK } from "@/app/_providers/ndkProvider";
 // import { useNDK } from "@nostr-dev-kit/ndk-react";
 import { z } from "zod";
 import { useNostr, useNostrEvents } from "nostr-react";
-import { createEventNew } from "@/lib/actions/create";
+import { createEvent } from "@/lib/actions/create";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
 import { useModal } from "@/app/_providers/modalContext/provider";
@@ -50,7 +50,7 @@ export default function CreateList() {
       tags.push(["title", data.title]);
     }
 
-    const result = await createEventNew(ndk!, {
+    const result = await createEvent(ndk!, {
       content: data.content,
       kind: 1,
       tags: tags,

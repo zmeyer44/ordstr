@@ -20,7 +20,7 @@ import { getHashedKeyName } from "@/lib/nostr";
 import { dateToUnix } from "nostr-react";
 import { NostrService } from "@/lib/nostr";
 
-export async function createEventNew(
+export async function createEvent(
   ndk: NDK,
   event: {
     content: string;
@@ -50,94 +50,49 @@ export async function createEventNew(
     return false;
   }
 }
-export async function createEvent(
-  event: {
-    content: string;
-    kind: number;
-    tags: string[][];
-  },
-  publish: (event: Event<number>) => void,
-) {
-  try {
-    const pubkey = await window.nostr?.getPublicKey();
-    if (!pubkey || !window.nostr) {
-      throw new Error("No public key provided!");
-    }
-    const unsignedEvent: UnsignedEvent = {
-      ...event,
-      created_at: dateToUnix(),
-      pubkey: pubkey,
-    };
-    const unsignedEventWithId = {
-      ...unsignedEvent,
-      id: getEventHash(unsignedEvent),
-    };
-    const sig = await window.nostr.signEvent(unsignedEventWithId);
-    const eventToPublish: Event = {
-      ...unsignedEventWithId,
-      ...sig,
-    };
-
-    console.log("Publishing", eventToPublish);
-
-    publish(eventToPublish);
-  } catch (err) {
-    console.log(err);
-    alert("An error has occured");
-  }
-}
 export async function createReaction(
+  ndk: NDK,
   content: "+" | "-",
   event: {
     id: string;
     pubkey: string;
   },
-  publish: (event: Event<number>) => void,
 ) {
-  return createEvent(
-    {
-      content,
-      kind: 7,
-      tags: [
-        ["e", event.id],
-        ["p", event.pubkey],
-      ],
-    },
-    publish,
-  );
+  return createEvent(ndk, {
+    content,
+    kind: 7,
+    tags: [
+      ["e", event.id],
+      ["p", event.pubkey],
+    ],
+  });
 }
 export async function createList(
-  publish: (event: Event<number>) => void,
+  ndk: NDK,
   title: string,
   description?: string,
 ) {
-  return createEvent(
-    {
-      content: "",
-      kind: 30001,
-      tags: [
-        ["name", title],
-        ["description", description ?? ""],
-        ["d", NostrService.randomId()],
-      ],
-    },
-    publish,
-  );
+  return createEvent(ndk, {
+    content: "",
+    kind: 30001,
+    tags: [
+      ["name", title],
+      ["description", description ?? ""],
+      ["d", NostrService.randomId()],
+    ],
+  });
 }
 
 export async function deleteEvent(
+  ndk: NDK,
   events: [["e", string] | ["a", `${number}:${string}:${string}`]],
-  publish: (event: Event<number>) => void,
   reason?: string,
 ) {
-  return createEvent(
-    {
-      kind: 5,
-      content: reason ?? "",
-      tags: events,
-    },
-    publish,
-  );
+  return createEvent(ndk, {
+    kind: 5,
+    content: reason ?? "",
+    tags: events,
+  });
 }
 
 export let listSigner: NDKPrivateKeySigner | undefined = undefined;
