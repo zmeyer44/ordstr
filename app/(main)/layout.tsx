@@ -9,7 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <div className="max-w-screen flex min-h-[100svh] w-full flex-col overflow-x-hidden ">
-      <div className="fixed inset-0 top-0 z-header">
+      <div className="fixed inset-x-0 top-0 z-header">
         <Header />
       </div>
       <div className="h-[74px] md:h-[104px]" />
