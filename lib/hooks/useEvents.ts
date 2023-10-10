@@ -12,7 +12,7 @@ export default function useEvents({ filter: initialFilter }: UseEventsProps) {
 
   const filter = useMemo<Filter>(() => {
     const buildingFilter: Filter = {
-      limit: 10,
+      limit: 50,
       until: unixTimeNowInSeconds(),
       ...initialFilter,
     };

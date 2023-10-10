@@ -15,7 +15,7 @@ type KindCardProps = Event<number> & {
 export default function KindCard(props: KindCardProps) {
   const { content } = props;
   const [showFull, setShowFull] = useState(false);
-  const [expandButton, setExpandButton] = useState(false);
+  const [expandButton, setExpandButton] = useState<boolean | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const { queryParams, setQueryParams } = useQueryParams<{
     t?: string | string[];
@@ -25,6 +25,8 @@ export default function KindCard(props: KindCardProps) {
     if (contentRef.current) {
       if (contentRef.current.scrollHeight > 350) {
         setExpandButton(true);
+      } else {
+        setExpandButton(false);
       }
     }
   }, [contentRef.current]);
@@ -34,7 +36,7 @@ export default function KindCard(props: KindCardProps) {
         ref={contentRef}
         className={cn(
           "relative mb-6 flex-1 overflow-hidden rounded-xl border-2 border-dashed border-accent bg-accent/20 p-4",
-          showFull ? "max-h-none" : "max-h-[400px]",
+          showFull || expandButton === false ? "max-h-none" : "max-h-[400px]",
         )}
       >
         <p className="break-words text-sm text-orange-100">
