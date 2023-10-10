@@ -39,28 +39,19 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
   const modal = useModal();
   const [list, setList] = useState<Event<number> | null>(null);
 
-  const {
-    events: lists,
-    isLoading: loadingList,
-    onDone,
-  } = useNostrEvents({
+  const { isLoading: loadingList, onEvent } = useNostrEvents({
     filter: {
       kinds: [30001],
       authors: [pubkey],
+      ["#d"]: [identifier],
     },
   });
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  onDone(() => {
-    console.log("LISTs", lists, pubkey, identifier);
-    const foundList = lists.filter(
-      (l) => getTagValues("d", l.tags) === identifier,
-    )[0];
-    if (foundList) {
-      setList(foundList);
-    }
+  onEvent((event) => {
+    console.log("EVENT received!", event);
+    setList(event);
   });
 
   if (loadingList) {

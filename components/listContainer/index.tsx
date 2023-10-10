@@ -1,5 +1,5 @@
 "use client";
-import useEvents from "@/lib/hooks/useEvents";
+import { useEffect } from "react";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { truncateText } from "@/lib/utils";
@@ -57,6 +57,11 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
               <EventListItem key={e.id} event={e} />
             ))}
           </ul>
+          {!isLoading && events.length === 0 && (
+            <div className="center py-3 text-sm text-primary">
+              <p className="">No lists found</p>
+            </div>
+          )}
         </>
       </CardContent>
     </Card>
