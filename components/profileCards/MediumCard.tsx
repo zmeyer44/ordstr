@@ -52,7 +52,7 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
             </div>
           </div>
           <div className="ml-auto flex items-center gap-x-3 py-2">
-            {actions?.map(({ element: Element }) => <Element />)}
+            {actions?.map(({ element: Element }, idx) => <Element key={idx} />)}
             {/* {sessionData?.user?.ordinalsAddress === user.ordinalsAddress ? (
                 <Link
                   href="/settings/profile"

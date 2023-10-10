@@ -1,60 +1,100 @@
-"use client";
-import { useState, useRef } from "react";
-import Template from "./Template";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import useAutosizeTextArea from "@/lib/hooks/useAutoSizeTextArea";
-import { createEvent } from "@/lib/actions/create";
-import { useNostr } from "nostr-react";
+import { useState } from "react";
+import { User } from "@/types";
+import FormModal from "./FormModal";
+import { useNDK } from "@/app/_providers/ndkProvider";
+// import { useNDK } from "@nostr-dev-kit/ndk-react";
+import { z } from "zod";
+import { useNostr, useNostrEvents } from "nostr-react";
+import { createEventNew } from "@/lib/actions/create";
+import useCurrentUser from "@/lib/hooks/useCurrentUser";
+import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
 import { useModal } from "@/app/_providers/modalContext/provider";
+import { toast } from "react-hot-toast";
+import { randomId } from "@/lib/nostr";
+const CreateListSchema = z.object({
+  title: z.string().optional(),
+  content: z.string(),
+  sender: z.enum(["self", "delegate"]).optional(),
+});
 
-export default function CreateEventModal() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [input, setInput] = useState("");
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+type CreateListType = z.infer<typeof CreateListSchema>;
+
+export default function CreateList() {
   const modal = useModal();
-  const { publish } = useNostr();
-  useAutosizeTextArea(textAreaRef.current, input);
-  async function handleSubmit() {
-    try {
-      setIsLoading(true);
-      await createEvent(
-        {
-          content: input,
-          kind: 1,
-          tags: [],
-        },
-        publish
-      );
-      setInput("");
-      modal?.hide();
-    } catch (err) {
-      console.log("Error", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [content, setContent] = useState<string | null>(null);
+  const { currentUser, updateUser } = useCurrentUser();
+  const { ndk, signer } = useNDK();
 
+  const { onDone } = useNostrEvents({
+    filter: {
+      kinds: [1],
+      authors: [currentUser?.pubkey as string],
+      since: unixTimeNowInSeconds(),
+      limit: 1,
+    },
+    enabled: !!content,
+  });
+
+  onDone(() => {
+    console.log("Done!");
+    setIsLoading(false);
+    toast.success("Note Created!");
+    modal?.hide();
+  });
+
+  async function handleSubmit(data: CreateListType) {
+    setIsLoading(true);
+    const tags = [];
+    if (data.title) {
+      tags.push(["title", data.title]);
+    }
+
+    const result = await createEventNew(ndk!, {
+      content: data.content,
+      kind: 1,
+      tags: tags,
+    });
+    setContent(data.content);
+    console.log("Result", result);
+  }
   return (
-    <Template title="Create Event" className=" md:max-w-[400px]">
-      <div className="flex flex-col gap-y-5">
-        <Textarea
-          ref={textAreaRef}
-          autoFocus
-          placeholder="Send a note"
-          draggable={false}
-          value={input}
-          disabled={isLoading}
-          onChange={(e) => {
-            setInput(e.target.value);
-          }}
-          rows={1}
-          className="min-h-[42px] min-w-[300p]"
-        />
-        <Button onClick={() => void handleSubmit()} loading={isLoading}>
-          Submit
-        </Button>
-      </div>
-    </Template>
+    <FormModal
+      title="Create Note"
+      fields={[
+        {
+          label: "Title",
+          type: "input",
+          slug: "title",
+        },
+        {
+          label: "Content",
+          type: "text-area",
+          slug: "content",
+        },
+        {
+          label: "Publish as",
+          slug: "sender",
+          type: "select",
+          value: "self",
+          options: [
+            {
+              label: "Self",
+              value: "self",
+            },
+            {
+              label: "Delegate",
+              value: "delegate",
+            },
+          ],
+        },
+      ]}
+      formSchema={CreateListSchema}
+      onSubmit={handleSubmit}
+      isSubmitting={isLoading}
+      cta={{
+        text: "Create Event",
+      }}
+    />
   );
 }

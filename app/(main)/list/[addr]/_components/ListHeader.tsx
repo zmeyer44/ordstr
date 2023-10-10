@@ -6,9 +6,10 @@ import { MdContentCopy } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { RenderText } from "@/components/textRendering";
 import { copyText, truncateText } from "@/lib/utils";
+import { type NostrEvent } from "@nostr-dev-kit/ndk";
 
 type ListHeaderProps = {
-  event: Event;
+  event: NostrEvent;
   actions?: { element: () => JSX.Element }[];
 };
 
@@ -21,7 +22,7 @@ export default function ListHeader({ event, actions }: ListHeaderProps) {
   const description = getTagValues("description", event.tags);
   const naddr = nip19.naddrEncode({
     identifier: identifier,
-    kind: event.kind,
+    kind: event?.kind ?? 30001,
     pubkey: event.pubkey,
   });
   return (

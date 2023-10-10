@@ -2,6 +2,8 @@
 import sha256 from "crypto-js/sha256";
 import Hex from "crypto-js/enc-hex";
 import { getTagValues } from "./utils";
+import { sha256 as SHA256 } from "@noble/hashes/sha256";
+import { bytesToHex } from "@noble/hashes/utils";
 
 export enum Kind {
   Metadata = 0,
@@ -39,6 +41,15 @@ export function randomId() {
       ).toString(16),
     )
     .slice(0, 8) as string;
+}
+
+export function getHashedKeyName(name: string) {
+  let eventHash = SHA256(name);
+  const version = bytesToHex(eventHash);
+  const alt = sha256(name).toString(Hex);
+  console.log("VERSION", version, "vs", alt);
+  console.log("EQUAL?", version === alt);
+  return version;
 }
 
 export namespace NostrService {

@@ -1,6 +1,5 @@
 import Header from "./_layoutComponents/Header";
 import Footer from "./_layoutComponents/Footer";
-import NewEventButton from "./_layoutComponents/NewEventButton";
 import BottomNav from "./_layoutComponents/BottomNav";
 
 export default function RootLayout({

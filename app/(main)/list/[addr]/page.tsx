@@ -1,10 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MediumProfileCard from "@/components/profileCards/MediumCard";
-import Link from "next/link";
-import { toast } from "react-hot-toast";
-import useProfile from "@/lib/hooks/useProfile";
 import { nip19, type Event } from "nostr-tools";
 import Spinner from "@/components/spinner";
 import Feed from "@/containers/Feed";
@@ -18,6 +14,9 @@ import { Kind } from "@/lib/nostr";
 import { z } from "zod";
 import ListHeader from "./_components/ListHeader";
 import { getTagsValues, getTagValues } from "@/lib/nostr/utils";
+import { useLists } from "@/app/_providers/listProvider";
+import { NDKList, NDKUser } from "@nostr-dev-kit/ndk";
+
 const AddrSchema = z.object({
   identifier: z.string(),
   kind: z.number(),
@@ -29,32 +28,30 @@ type ListPageProps = {
 };
 
 export default function ListPage({ params: { addr } }: ListPageProps) {
-  const [mounted, setMounted] = useState(false);
-  const { data, type } = nip19.decode(addr);
-  // console.log("decode", data, type);
+  const [loading, setLoading] = useState(false);
+  const { data } = nip19.decode(addr);
   const addrData = AddrSchema.parse(data);
-  const identifier = addrData.identifier;
+  const { lists, getLists } = useLists()!;
   const pubkey = addrData.pubkey;
+  useEffect(() => {
+    setLoading(true);
+    const sub = getLists(pubkey);
+    if (sub) {
+      sub.on("eose", () => setLoading(false));
+    }
+    return () => {
+      if (sub) {
+        sub.stop();
+      }
+    };
+  }, []);
   const keys = useKeys();
   const modal = useModal();
-  const [list, setList] = useState<Event<number> | null>(null);
+  const list = lists.get(
+    `${addrData.kind}:${addrData.pubkey}:${addrData.identifier}`,
+  );
 
-  const { isLoading: loadingList, onEvent } = useNostrEvents({
-    filter: {
-      kinds: [30001],
-      authors: [pubkey],
-      ["#d"]: [identifier],
-    },
-  });
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  onEvent((event) => {
-    console.log("EVENT received!", event);
-    setList(event);
-  });
-
-  if (loadingList) {
+  if (loading) {
     return (
       <div className="center py-10">
         <Spinner />
@@ -65,15 +62,33 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
     return (
       <div className="center py-10">
         <p>No list found</p>
+        <p>{JSON.stringify(lists.size)}</p>
       </div>
     );
   }
+  const rawEvent = list.rawEvent();
+
   return (
     <div className="screen-container mx-auto flex flex-col items-stretch gap-x-6 gap-y-6 py-10">
       <div className="flex flex-1">
-        <ListHeader event={list} />
+        <ListHeader
+          event={rawEvent}
+          actions={
+            keys?.keys.pubkey === pubkey
+              ? [
+                  {
+                    element: () => (
+                      <Button size="sm" onClick={() => modal?.show(<div />)}>
+                        Add to List
+                      </Button>
+                    ),
+                  },
+                ]
+              : []
+          }
+        />
       </div>
-      <div className="mx-auto flex max-w-xl flex-col gap-x-6 gap-y-6 sm:flex-row">
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-x-6 gap-y-6 sm:flex-row">
         <Feed
           filter={{
             ids: getTagsValues("e", list.tags),

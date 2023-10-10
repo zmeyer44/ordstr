@@ -25,13 +25,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const demoSchema = z.object({
-  title: z.string(),
-});
 
 type FieldOptions =
   | "toggle"
@@ -40,20 +43,31 @@ type FieldOptions =
   | "text-area"
   | "custom";
 
+type DefaultFieldType<TSchema> = {
+  label: string;
+  slug: keyof z.infer<z.Schema<TSchema>> & string;
+  placeholder?: string;
+  description?: string;
+  lines?: number;
+  styles?: string;
+  value?: string | number | boolean;
+  custom?: ReactNode;
+  options?: { label: string; value: string; icon?: ReactNode }[];
+};
+type FieldType<TSchema> = DefaultFieldType<TSchema> &
+  (
+    | {
+        type: "select";
+        options: { label: string; value: string; icon?: ReactNode }[];
+      }
+    | {
+        type: FieldOptions;
+      }
+  );
+
 type FormModalProps<TSchema> = {
   title: string;
-  fields: {
-    label: string;
-    slug: keyof z.infer<z.Schema<TSchema>> & string;
-    type: FieldOptions;
-    placeholder?: string;
-    description?: string;
-    options?: { label: string; value: string; icon?: ReactNode }[];
-    lines?: number;
-    styles?: string;
-    value?: string | number | boolean;
-    custom?: ReactNode;
-  }[];
+  fields: FieldType<TSchema>[];
   errors?: FieldErrors;
   isSubmitting?: boolean;
   cta: {
@@ -85,30 +99,62 @@ export default function FormModal<TSchema extends FieldValues>({
     <Template title={title} className="md:max-w-[400px]">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {fields.map(({ label, slug, type, placeholder, description }) => (
-            <FormField
-              control={form.control}
-              name={slug as Path<TSchema>}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
+          {fields.map(
+            ({
+              label,
+              slug,
+              type,
+              placeholder,
+              description,
+              ...fieldProps
+            }) => (
+              <FormField
+                control={form.control}
+                name={slug as Path<TSchema>}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{label}</FormLabel>
                     {type === "input" ? (
-                      <Input placeholder={placeholder} {...field} />
+                      <FormControl>
+                        <Input placeholder={placeholder} {...field} />
+                      </FormControl>
                     ) : type === "text-area" ? (
-                      <Textarea placeholder={placeholder} {...field} />
+                      <FormControl>
+                        <Textarea placeholder={placeholder} {...field} />
+                      </FormControl>
+                    ) : type === "select" ? (
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={placeholder} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {fieldProps.options?.map((o) => (
+                            <SelectItem key={o.value} value={o.value}>
+                              {o.label}
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="test">Test</SelectItem>
+                        </SelectContent>
+                      </Select>
                     ) : (
-                      <Input placeholder="shadcn" {...field} />
+                      <FormControl>
+                        <Input placeholder={placeholder} {...field} />
+                      </FormControl>
                     )}
-                  </FormControl>
-                  {!!description && (
-                    <FormDescription>{description}</FormDescription>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
+                    {!!description && (
+                      <FormDescription>{description}</FormDescription>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ),
+          )}
 
           <Button type="submit" className="w-full" loading={isSubmitting}>
             {cta.text}

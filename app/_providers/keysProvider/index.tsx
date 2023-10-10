@@ -13,6 +13,7 @@ import { useNostrEvents } from "nostr-react";
 import { nip19 } from "nostr-tools";
 import { Kind } from "@/lib/nostr";
 import { UserSchema } from "@/types";
+import { useNDK } from "../ndkProvider";
 
 type KeysContextProps = {
   setKeys: (keys: { privkey: string | null; pubkey: string | null }) => void;
@@ -31,7 +32,7 @@ export default function KeysProvider({ children }: { children: ReactElement }) {
     privkey: null,
     pubkey: null,
   });
-
+  const { loginWithNip07 } = useNDK();
   useEffect(() => {
     console.log("Running keys init");
     const shouldReconnect = localStorage.getItem("shouldReconnect");
@@ -44,8 +45,16 @@ export default function KeysProvider({ children }: { children: ReactElement }) {
       }
 
       if (shouldReconnect === "true") {
-        const publicKey = await window.nostr.getPublicKey();
-        setKeys({ privkey: "", pubkey: publicKey });
+        // const publicKey = await window.nostr.getPublicKey();
+        const user = await loginWithNip07();
+        if (!user) {
+          throw new Error("NO auth");
+        }
+
+        setKeys({
+          privkey: "",
+          pubkey: nip19.decode(user.npub).data.toString(),
+        });
       }
 
       if (typeof window.webln === "undefined") {

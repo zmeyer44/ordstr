@@ -6,8 +6,10 @@ import { useNostr } from "nostr-react";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { useKeys } from "@/app/_providers/keysProvider";
 import { nip19 } from "nostr-tools";
+import { useNDK } from "@/app/_providers/ndkProvider";
 
 export default function LoginModal() {
+  const { loginWithNip07 } = useNDK();
   const [isLoading, setIsLoading] = useState(false);
   const modal = useModal();
   const keys = useKeys();
@@ -25,9 +27,15 @@ export default function LoginModal() {
       }
 
       if (shouldReconnect === "true") {
-        const publicKey = await window.nostr.getPublicKey();
-        console.log("public key", publicKey);
-        keys?.setKeys({ privkey: "", pubkey: nip19.npubEncode(publicKey) });
+        const user = await loginWithNip07();
+        if (!user) {
+          throw new Error("NO auth");
+        }
+
+        keys?.setKeys({
+          privkey: "",
+          pubkey: nip19.decode(user.npub).data.toString(),
+        });
       }
 
       if (typeof window.webln === "undefined") {
@@ -53,9 +61,15 @@ export default function LoginModal() {
   async function handleLogin() {
     setIsLoading(true);
     if (typeof window.nostr !== "undefined") {
-      const publicKey = await window.nostr.getPublicKey();
-      console.log("public key", publicKey);
-      keys?.setKeys({ privkey: "", pubkey: publicKey });
+      const user = await loginWithNip07();
+      if (!user) {
+        throw new Error("NO auth");
+      }
+
+      keys?.setKeys({
+        privkey: "",
+        pubkey: nip19.decode(user.npub).data.toString(),
+      });
       localStorage.setItem("shouldReconnect", "true");
     }
 

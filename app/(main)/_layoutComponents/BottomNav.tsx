@@ -116,19 +116,7 @@ export default function BottomNav() {
           <div
             ref={newContentBtnRef}
             onClick={() => {
-              // modal?.show(<CreateEventModal />);
-              modal?.show(
-                <FormModal
-                  cta={{ text: "Create" }}
-                  onSubmit={(data) => console.log("Data submitted", data)}
-                  fields={[{ label: "Title", slug: "title", type: "input" }]}
-                  defaultValues={{}}
-                  formSchema={z.object({
-                    title: z.string(),
-                  })}
-                  title="Create List"
-                />,
-              );
+              modal?.show(<CreateEventModal />);
               setMenuOpen(false);
             }}
             className={cn(

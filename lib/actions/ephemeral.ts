@@ -1,15 +1,13 @@
+import { type Event as NostrEvent } from "nostr-tools";
 import NDK, {
   NDKEvent,
   NDKPrivateKeySigner,
+  type NDKTag,
   type NDKFilter,
   type NDKSigner,
   type NDKUserProfile,
 } from "@nostr-dev-kit/ndk";
-import type { NDKTag, NostrEvent } from "@nostr-dev-kit/ndk";
-import { sha256 } from "@noble/hashes/sha256";
-import { bytesToHex } from "@noble/hashes/utils";
-
-const CURRENT_PRIVATE_NOTE_VERSION = "2";
+import { getHashedKeyName } from "@/lib/nostr";
 
 interface IFindEphemeralSignerLookups {
   name?: string;
@@ -69,13 +67,6 @@ export async function findEphemeralSigner(
   }
 }
 
-type EphemeralKeyEventContent = {
-  key: string;
-  event?: string;
-  version: string;
-  metadata?: object;
-};
-
 interface ISaveOpts {
   associatedEvent?: NDKEvent;
   name?: string;
@@ -83,14 +74,19 @@ interface ISaveOpts {
   keyProfile?: NDKUserProfile;
   mainSigner?: NDKSigner;
 }
-
+type EphemeralKeyEventContent = {
+  key: string;
+  event?: string;
+  version: string;
+  metadata?: object;
+};
 function generateContent(
   targetSigner: NDKPrivateKeySigner,
   opts: ISaveOpts = {},
 ) {
   const content: EphemeralKeyEventContent = {
     key: targetSigner.privateKey!,
-    version: CURRENT_PRIVATE_NOTE_VERSION,
+    version: "v1",
     ...opts.metadata,
   };
 
@@ -98,12 +94,6 @@ function generateContent(
 
   return JSON.stringify(content);
 }
-
-async function getHashedKeyName(name: string) {
-  let eventHash = sha256(name);
-  return bytesToHex(eventHash);
-}
-
 async function generateTags(mainSigner: NDKSigner, opts: ISaveOpts = {}) {
   const mainUser = await mainSigner.user();
   const tags = [
@@ -127,15 +117,6 @@ async function generateTags(mainSigner: NDKSigner, opts: ISaveOpts = {}) {
   return tags;
 }
 
-/**
- * Saves an ephemeral signer to a self-DM
- *
- * @param ndk The NDK instance to use
- * @param mainSigner The signer to save the ephemeral signer with
- * @param targetSigner The ephemeral signer to save
- * @param associatedEvent An event to associate with the ephemeral signer
- * @param name The name to save the ephemeral signer as -- this name will be encrypted with the main signer's public key
- */
 export async function saveEphemeralSigner(
   ndk: NDK,
   targetSigner: NDKPrivateKeySigner,
@@ -167,9 +148,4 @@ export async function saveEphemeralSigner(
     await event.sign(targetSigner);
     await event.publish();
   }
-}
-
-export function generateEphemeralSigner(): NDKPrivateKeySigner {
-  const signer = NDKPrivateKeySigner.generate();
-  return signer;
 }
