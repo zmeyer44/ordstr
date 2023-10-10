@@ -9,6 +9,7 @@ import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { toast } from "react-hot-toast";
 import { randomId } from "@/lib/nostr";
+import { useNDK } from "@/app/_providers/ndkProvider";
 const CreateListSchema = z.object({
   name: z.string(),
   picture: z.string().optional(),
@@ -22,7 +23,7 @@ export default function CreateList() {
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const { currentUser, updateUser } = useCurrentUser();
-  const { publish } = useNostr();
+  const { ndk } = useNDK();
   const { onDone } = useNostrEvents({
     filter: {
       kinds: [30001],
@@ -54,14 +55,11 @@ export default function CreateList() {
     if (data.picture) {
       tags.push(["picture", data.picture]);
     }
-    const result = await createEvent(
-      {
-        content: "",
-        kind: 30001,
-        tags: tags,
-      },
-      publish,
-    );
+    const result = await createEvent(ndk!, {
+      content: "",
+      kind: 30001,
+      tags: tags,
+    });
     setId(random);
   }
   return (

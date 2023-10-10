@@ -2,12 +2,13 @@ import { useState } from "react";
 import { User } from "@/types";
 import FormModal from "./FormModal";
 import { z } from "zod";
-import { useNostr, useNostrEvents } from "nostr-react";
+import { useNostrEvents } from "nostr-react";
 import { createEvent } from "@/lib/actions/create";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { toast } from "react-hot-toast";
+import { useNDK } from "@/app/_providers/ndkProvider";
 
 const EditProfileSchema = z.object({
   display_name: z.string().optional(),
@@ -28,8 +29,8 @@ export default function EditProfile({ user }: EditProfileModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [newData, setNewData] = useState<string | null>(null);
   const { currentUser, updateUser } = useCurrentUser();
-  const { publish } = useNostr();
-  const { onEvent, onDone } = useNostrEvents({
+  const { ndk } = useNDK();
+  const { onDone } = useNostrEvents({
     filter: {
       kinds: [0],
       authors: [currentUser?.pubkey as string],
@@ -56,14 +57,11 @@ export default function EditProfile({ user }: EditProfileModalProps) {
   async function handleSubmit(userData: EditProfileType) {
     setIsLoading(true);
     const content = JSON.stringify(userData);
-    const result = await createEvent(
-      {
-        content,
-        kind: 0,
-        tags: [],
-      },
-      publish,
-    );
+    const result = await createEvent(ndk!, {
+      content,
+      kind: 0,
+      tags: [],
+    });
 
     setNewData(content);
   }
