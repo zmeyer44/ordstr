@@ -43,7 +43,7 @@ export function relativeTimeUnix(timestamp: number) {
     },
   });
   dayjs.extend(relative, config);
-  return dayjs(timestamp * 1000)?.fromNow();
+  return dayjs(timestamp * 1000).fromNow();
 }
 export function relativeTime(timestamp: Date) {
   const config = {

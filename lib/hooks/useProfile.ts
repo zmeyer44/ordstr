@@ -3,7 +3,6 @@ import { useProfile as useNostrProfile } from "nostr-react";
 import { nip19 } from "nostr-tools";
 import { NOSTR_BECH32_REGEXP } from "@/lib/nostr/utils";
 export default function useProfile(pubkey: string, test?: string) {
-  console.log("running use profile", pubkey, test);
   // if (nip19.BECH32_REGEX.test(pubkey) && pubkey.startsWith("n")) {
   //   const decone = nip19.decode(pubkey);
   //   console.log("decone", decone);

@@ -47,7 +47,7 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
       ["#d"]: [identifier],
       kinds: [30001],
       authors: [pubkey],
-      limit: 3,
+      limit: 1,
     },
     enabled: mounted,
   });
