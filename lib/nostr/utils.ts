@@ -50,6 +50,5 @@ export const getTagValues = (name: string, tags: string[][]) => {
 };
 export const getTagsValues = (name: string, tags: string[][]) => {
   const itemTags = tags.filter((tag: string[]) => tag[0] === name);
-  console.log("itemTab", itemTags);
   return itemTags.map(([key, val]) => val) ?? [];
 };

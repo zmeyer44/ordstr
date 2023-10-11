@@ -43,7 +43,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import { useNDK } from "@/app/_providers/ndkProvider";
 import { createEvent, createEventOnList } from "@/lib/actions/create";
-import { createZodFetcher } from "zod-fetch";
 import { NDKEvent, NDKList } from "@nostr-dev-kit/ndk";
 import { NostrEvent } from "@nostr-dev-kit/ndk";
 import {
@@ -53,8 +52,7 @@ import {
 import { getTagValues } from "@/lib/nostr/utils";
 import { saveEphemeralSigner } from "@/lib/actions/ephemeral";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
-
-const fetchWithZod = createZodFetcher();
+import { fetchMetadata } from "@/lib/fetchers/metadata";
 
 const metadataSchema = z.object({
   title: z.string(),
@@ -63,9 +61,6 @@ const metadataSchema = z.object({
   creator: z.string().optional(),
   type: z.string().optional(),
   "theme-color": z.string().optional(),
-});
-const metadataSchemaResponse = z.object({
-  data: metadataSchema,
 });
 
 type MetadataType = z.infer<typeof metadataSchema>;
@@ -111,19 +106,6 @@ const fields = [
     ],
   },
 ];
-
-function handleFetchMetadata(url: string) {
-  return fetchWithZod(
-    // The schema you want to validate with
-    metadataSchemaResponse,
-    // Any parameters you would usually pass to fetch
-    "/api/metadata",
-    {
-      method: "POST",
-      body: JSON.stringify({ url }),
-    },
-  );
-}
 
 export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   const modal = useModal();
@@ -212,8 +194,8 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   }, [sender]);
   useEffect(() => {
     if (validateUrl(debouncedLink)) {
-      handleFetchMetadata(debouncedLink)
-        .then((r) => {
+      fetchMetadata(debouncedLink)
+        ?.then((r) => {
           setMetadata(r.data);
         })
         .catch((e) => console.log("fetch error"));

@@ -70,21 +70,14 @@ export const fetchContent: (url: string) => Promise<ReturnType> = async (
   try {
     console.log("Calling", url);
     const response = await fetch(url).catch((err) =>
-      console.log("Fetch error in content fetch", err),
+      console.log("Fetch error"),
     );
-    console.log("RESPONSE", response);
+    // console.log("RESPONSE", response);
     if (!response) {
       return null;
     }
     const contentType = response.headers.get("content-type");
-    if (contentType?.startsWith("text/html")) {
-      const data = await response.json();
-      return {
-        data: data,
-        contentType: contentType,
-        type: "link",
-      };
-    } else if (contentType?.startsWith("image")) {
+    if (contentType?.startsWith("image")) {
       const imageData = (await response.blob().then(
         (blob) =>
           new Promise((resolve, reject) => {
@@ -114,7 +107,7 @@ const useCacheFetch = ({ url }: { url: string }) => {
   async function handleFetch() {
     setIsLoading(true);
     const response = await fetchContent(url);
-    console.log("response", response);
+
     setData(response);
     setIsLoading(false);
   }

@@ -14,7 +14,9 @@ import { RenderText } from "../textRendering";
 import { type Event } from "nostr-tools";
 import useQueryParams from "@/lib/hooks/useQueryParams";
 import KindCardContainer from "./components/Container";
-import { getTagValues } from "@/lib/nostr/utils";
+import { getTagValues, getTagsValues } from "@/lib/nostr/utils";
+import UrlCard from "./components/UrlCard";
+import { uniq } from "ramda";
 
 type KindCardProps = Event<number> & {
   clickable?: boolean;
@@ -48,6 +50,10 @@ export default function KindCard(props: KindCardProps) {
           r: getTagValues("r", tags),
         }
       : null;
+  const r = uniq([
+    ...getTagsValues("r", tags),
+    ...getTagsValues("proxy", tags),
+  ]);
   return (
     <KindCardContainer {...props}>
       <div
@@ -59,28 +65,8 @@ export default function KindCard(props: KindCardProps) {
       >
         {metadata ? (
           <div className="space-y-4">
-            <a href={metadata.r} target="_blank" rel="nonreferrer">
-              <Card className="w-full bg-background">
-                {metadata.image && (
-                  <div className="center flex aspect-[2/1] flex-col overflow-hidden">
-                    <Image
-                      height="288"
-                      width="288"
-                      alt={metadata.title}
-                      src={metadata.image}
-                      unoptimized
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                )}
-                <CardHeader className="border-0 border-t-2">
-                  <CardTitle>{metadata.title}</CardTitle>
-                  <CardDescription className="line-clamp-2 text-xs text-primary">
-                    {metadata.description}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </a>
+            <UrlCard url={metadata.r} metadata={metadata} className="" />
+
             <div className="">
               <h3>Notes:</h3>
               <p className="break-words text-sm text-orange-100">
@@ -89,9 +75,20 @@ export default function KindCard(props: KindCardProps) {
             </div>
           </div>
         ) : (
-          <p className="break-words text-sm text-orange-100">
-            <RenderText text={content} />
-          </p>
+          <div className="space-y-4">
+            <p className="break-words text-sm text-orange-100">
+              <RenderText text={content} />
+            </p>
+            {!!r.length && (
+              <div className="flex flex-wrap">
+                {r.map((url) => (
+                  // <div key={url} className="max-w-[100px]">
+                  <UrlCard key={url} url={url} className="max-w-[250px]" />
+                  // </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
         {!showFull && expandButton && (
           <div className="absolute inset-x-0 bottom-0 z-20">

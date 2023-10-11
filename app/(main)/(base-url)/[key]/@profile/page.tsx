@@ -57,6 +57,8 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
           <Feed
             filter={{
               authors: [pubkey],
+              kinds: [1],
+              limit: 50,
             }}
           />
         </div>
