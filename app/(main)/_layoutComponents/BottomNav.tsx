@@ -110,7 +110,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-header- sm:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-header-">
       <div className="flex justify-end px-10 pb-6">
         <div
           ref={newContentBtnRef}
