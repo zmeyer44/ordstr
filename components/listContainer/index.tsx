@@ -53,11 +53,13 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
                 <EventListItem key={e.id} event={e.rawEvent()} />
               ))}
           </ul>
-          {!isLoading && sortedLists.length === 0 && (
-            <div className="center py-3 text-sm text-primary">
-              <p className="">No lists found</p>
-            </div>
-          )}
+          {!isLoading &&
+            sortedLists.filter((l) => l.kind === Kind.GenericList).length ===
+              0 && (
+              <div className="center py-3 text-sm text-primary">
+                <p className="">No lists found</p>
+              </div>
+            )}
           {isLoading && (
             <div className="center py-5">
               <Spinner />

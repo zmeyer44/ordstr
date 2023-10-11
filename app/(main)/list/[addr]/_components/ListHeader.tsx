@@ -1,4 +1,4 @@
-import { nip19, type Event } from "nostr-tools";
+import { nip19 } from "nostr-tools";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getTagValues } from "@/lib/nostr/utils";
@@ -57,7 +57,6 @@ export default function ListHeader({ event, actions }: ListHeaderProps) {
           </div>
           <div className="ml-auto flex items-center gap-x-3 py-2">
             {actions?.map(({ element: Element }) => <Element />)}
-
             <div className="rounded-md bg-foreground">
               {/* <ShareButton ordinalsAddress={user.ordinalsAddress} /> */}
             </div>
@@ -73,7 +72,7 @@ export default function ListHeader({ event, actions }: ListHeaderProps) {
             </div>
             <div className="">
               <button
-                className="flex items-center text-xs font-light transition-colors hover:text-accent @sm:text-sm @lg:text-[16px]"
+                className="flex items-center text-xs font-light transition-colors @sm:text-sm @lg:text-[16px] hover:text-accent"
                 onClick={() => {
                   void copyText(naddr);
                   toast.success(`Copied naddr`);

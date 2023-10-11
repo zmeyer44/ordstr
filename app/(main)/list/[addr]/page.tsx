@@ -16,6 +16,8 @@ import { getTagsValues, getTagValues } from "@/lib/nostr/utils";
 import { useLists } from "@/app/_providers/listProvider";
 import { NDKList, NDKUser } from "@nostr-dev-kit/ndk";
 import useUserLists from "@/lib/hooks/useUserLists";
+import CreateListEvent from "@/components/modals/CreateListEvent";
+
 const AddrSchema = z.object({
   identifier: z.string(),
   kind: z.number(),
@@ -63,7 +65,14 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
               ? [
                   {
                     element: () => (
-                      <Button size="sm" onClick={() => modal?.show(<div />)}>
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          modal?.show(
+                            <CreateListEvent listAddress={list.tagId()} />,
+                          )
+                        }
+                      >
                         Add to List
                       </Button>
                     ),
