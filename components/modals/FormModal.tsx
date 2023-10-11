@@ -94,7 +94,6 @@ export default function FormModal<TSchema extends FieldValues>({
     defaultValues: defaultValues as DefaultValues<TSchema>,
     mode: "onChange",
   });
-
   return (
     <Template title={title} className="md:max-w-[400px]">
       <Form {...form}>
@@ -136,13 +135,12 @@ export default function FormModal<TSchema extends FieldValues>({
                             <SelectValue placeholder={placeholder} />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="z-modal+">
                           {fieldProps.options?.map((o) => (
                             <SelectItem key={o.value} value={o.value}>
                               {o.label}
                             </SelectItem>
                           ))}
-                          <SelectItem value="test">Test</SelectItem>
                         </SelectContent>
                       </Select>
                     ) : (

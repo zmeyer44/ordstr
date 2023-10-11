@@ -48,6 +48,14 @@ export default function CreateListEvent({ listAddress }: CreateListEventProps) {
 
   async function handleSubmit(data: CreateListEventType) {
     setIsLoading(true);
+    const response = await fetch("/api/metadata", {
+      body: JSON.stringify({ url: data.link }),
+      method: "POST",
+    }).then((r) => r.json());
+    console.log("Response", response);
+    setIsLoading(false);
+    return;
+
     const tags = [["r", data.link]];
 
     const result = await createEvent(ndk!, {

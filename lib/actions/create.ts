@@ -177,4 +177,5 @@ export async function createEventOnList(
   await list.addItem(tag, undefined, false);
   await list.sign();
   await list.publish();
+  return true;
 }

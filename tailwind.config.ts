@@ -87,8 +87,10 @@ module.exports = {
         header: 990,
         "header+": 991,
         headerDialog: 991,
-        "modal-": 997,
-        modal: 998,
+        "modal-": 995,
+        modal: 996,
+        "modal+": 997,
+        "top-": 998,
         top: 999,
       },
       flex: {
