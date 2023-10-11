@@ -31,7 +31,7 @@ export default function EditList({ listEvent }: EditListModalProps) {
   const { ndk } = useNDK();
   const { events } = useEvents({
     filter: {
-      kinds: [listEvent.kind],
+      kinds: [listEvent.kind as number],
       authors: [listEvent.pubkey],
       since: unixTimeNowInSeconds() - 10,
       limit: 1,
