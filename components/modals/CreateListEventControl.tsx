@@ -200,12 +200,11 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   const { watch } = form;
   const link = watch("link");
   const sender = watch("sender");
-  const debouncedLink = useDebounce<string>(link, 500);
+  const debouncedLink = useDebounce<string>(link, 300);
 
   useEffect(() => {
     if (sender === "delegate") {
       setFetchingSigner(true);
-      console.log("Calling get signer");
       void getSigner(new NDKList(ndk, listEvent))
         .then((r) => setDelegateSigner(r))
         .finally(() => setFetchingSigner(false));
@@ -251,6 +250,7 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {fields.map(({ label, slug, type, placeholder, ...fieldProps }) => (
             <FormField
+              key={slug}
               control={form.control}
               name={slug as Path<CreateListEventType>}
               render={({ field }) => (

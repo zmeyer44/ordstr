@@ -71,7 +71,7 @@ export default function KindCard({
                 toast.success("Copied Text!");
               },
             },
-            ...(currentUser?.pubkey === pubkey
+            ...(currentUser?.hexpubkey === pubkey
               ? [
                   {
                     label: "Delete Note",
