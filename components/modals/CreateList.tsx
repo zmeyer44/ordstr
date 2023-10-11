@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "@/types";
 import FormModal from "./FormModal";
 import { z } from "zod";
@@ -26,24 +26,27 @@ export default function CreateList() {
   const [id, setId] = useState<string | null>(null);
   const { currentUser, updateUser } = useCurrentUser();
   const { ndk } = useNDK();
-  const { onDone } = useEvents({
+  const { events } = useEvents({
     filter: {
       kinds: [30001],
       authors: [currentUser?.hexpubkey as string],
-      since: unixTimeNowInSeconds(),
+      since: unixTimeNowInSeconds() - 10,
       limit: 1,
       ["#d"]: [id as string],
     },
     enabled: !!id,
   });
 
-  onDone(() => {
-    console.log("Done!");
-    getLists(currentUser!.hexpubkey);
-    setIsLoading(false);
-    toast.success("List Created!");
-    modal?.hide();
-  });
+  useEffect(() => {
+    if (events.length) {
+      console.log("Done!");
+      getLists(currentUser!.hexpubkey);
+      setIsLoading(false);
+      toast.success("List Created!");
+      modal?.hide();
+    }
+  }, [events]);
+
   async function handleSubmit(data: CreateListType) {
     setIsLoading(true);
     const random = randomId();
