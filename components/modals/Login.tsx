@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from "react";
 import Template from "./Template";
 import { Button } from "@/components/ui/button";
-import { useNostr } from "nostr-react";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { useKeys } from "@/app/_providers/keysProvider";
 import { nip19 } from "nostr-tools";
@@ -31,7 +30,7 @@ export default function LoginModal() {
         if (!user) {
           throw new Error("NO auth");
         }
-
+        console.log("LOGIN", user);
         keys?.setKeys({
           privkey: "",
           pubkey: nip19.decode(user.npub).data.toString(),

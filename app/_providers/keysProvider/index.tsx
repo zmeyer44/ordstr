@@ -8,10 +8,7 @@ import {
   useEffect,
 } from "react";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
-import { useProfile as useNostrProfile } from "nostr-react";
-import { useNostrEvents } from "nostr-react";
 import { nip19 } from "nostr-tools";
-import { Kind } from "@/lib/nostr";
 import { UserSchema } from "@/types";
 import { useNDK } from "../ndkProvider";
 
@@ -32,42 +29,27 @@ export default function KeysProvider({ children }: { children: ReactElement }) {
     privkey: null,
     pubkey: null,
   });
-  const { loginWithNip07 } = useNDK();
+  const { loginWithNip07, getProfile, ndk } = useNDK();
+  const { setCurrentUser, currentUser } = useCurrentUser();
+
   useEffect(() => {
-    console.log("Running keys init");
+    console.log("Keys init");
     const shouldReconnect = localStorage.getItem("shouldReconnect");
 
     const getConnected = async (shouldReconnect: string) => {
-      let enabled: boolean | void = false;
-
-      if (typeof window.nostr === "undefined") {
-        return;
-      }
-
       if (shouldReconnect === "true") {
         // const publicKey = await window.nostr.getPublicKey();
         const user = await loginWithNip07();
         if (!user) {
           throw new Error("NO auth");
         }
+        console.log("Setting keys", user);
 
         setKeys({
           privkey: "",
           pubkey: nip19.decode(user.npub).data.toString(),
         });
       }
-
-      if (typeof window.webln === "undefined") {
-        return;
-      }
-      if (shouldReconnect === "true" && !window.webln.executing) {
-        try {
-          enabled = await window.webln.enable();
-        } catch (e: any) {
-          console.log(e.message);
-        }
-      }
-      return enabled;
     };
 
     if (shouldReconnect === "true") {
@@ -75,27 +57,48 @@ export default function KeysProvider({ children }: { children: ReactElement }) {
     }
   }, []);
 
-  const { events } = useNostrEvents({
-    filter: {
-      authors: [keys.pubkey as string],
-      kinds: [Kind.Metadata],
-    },
-    enabled: !!keys.pubkey,
-  });
-
-  const { setCurrentUser, currentUser } = useCurrentUser();
   useEffect(() => {
-    const metadataEvent = events[0];
-    if (metadataEvent) {
-      const userData = UserSchema.safeParse({
-        ...JSON.parse(metadataEvent.content),
-        npub: nip19.npubEncode(metadataEvent.pubkey),
-      });
-      if (userData.success && !currentUser) {
-        setCurrentUser({ ...userData.data, pubkey: metadataEvent.pubkey });
-      }
+    if (keys.pubkey) {
+      handleFetchMetadata(keys.pubkey);
+      // setCurrentUser(user)
     }
-  }, [events]);
+  }, [keys.pubkey]);
+
+  async function handleFetchMetadata(pubkey: string) {
+    const metadataEvent = await ndk?.fetchEvent({
+      authors: [pubkey],
+      kinds: [0],
+    });
+    if (!metadataEvent) return;
+    const parsedUserData = UserSchema.safeParse({
+      ...JSON.parse(metadataEvent.content),
+      npub: nip19.npubEncode(pubkey),
+    });
+    if (parsedUserData.success) {
+      setCurrentUser({ ...parsedUserData.data, pubkey });
+    }
+  }
+
+  // const { events } = useNostrEvents({
+  //   filter: {
+  //     authors: [keys.pubkey as string],
+  //     kinds: [Kind.Metadata],
+  //   },
+  //   enabled: !!keys.pubkey,
+  // });
+
+  // useEffect(() => {
+  //   const metadataEvent = events[0];
+  //   if (metadataEvent) {
+  //     const userData = UserSchema.safeParse({
+  //       ...JSON.parse(metadataEvent.content),
+  //       npub: nip19.npubEncode(metadataEvent.pubkey),
+  //     });
+  //     if (userData.success && !currentUser) {
+  //       setCurrentUser({ ...userData.data, pubkey: metadataEvent.pubkey });
+  //     }
+  //   }
+  // }, [events]);
 
   return (
     <KeysContext.Provider value={{ keys, setKeys }}>

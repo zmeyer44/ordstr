@@ -2,9 +2,8 @@ import { useState } from "react";
 import { User } from "@/types";
 import FormModal from "./FormModal";
 import { useNDK } from "@/app/_providers/ndkProvider";
-// import { useNDK } from "@nostr-dev-kit/ndk-react";
 import { z } from "zod";
-import { useNostr, useNostrEvents } from "nostr-react";
+import useEvents from "@/lib/hooks/useEvents";
 import { createEvent } from "@/lib/actions/create";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
@@ -25,8 +24,7 @@ export default function CreateList() {
   const [content, setContent] = useState<string | null>(null);
   const { currentUser, updateUser } = useCurrentUser();
   const { ndk, signer } = useNDK();
-
-  const { onDone } = useNostrEvents({
+  const { onDone } = useEvents({
     filter: {
       kinds: [1],
       authors: [currentUser?.pubkey as string],

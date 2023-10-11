@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useNostrEvents } from "nostr-react";
+import useEvents from "@/lib/hooks/useEvents";
 import { nip19, type Filter, type Event, nip04 } from "nostr-tools";
 import { getHashedKeyName } from "@/lib/nostr";
 import { useKeys } from "@/app/_providers/keysProvider";
 import { z } from "zod";
+import { NDKFilter, NDKKind } from "@nostr-dev-kit/ndk";
 
 const PrivateKeySigner = z.object({
   privateKey: z.string(),
@@ -25,14 +27,14 @@ export default function useSigner({ metadata }: UseSignerProps) {
   const keys = useKeys();
   const [signer, setSigner] = useState<Event<number> | null>(null);
   const [privateKey, setPrivateKey] = useState<string | null>("");
-  const filter: Filter = { kinds: [2600] };
+  const filter: NDKFilter = { kinds: [2600 as NDKKind] };
 
   const hashedName = metadata.name
     ? getHashedKeyName(metadata.name)
     : getHashedKeyName(metadata.eventId);
   filter["#e"] = [hashedName];
 
-  const { isLoading, onEvent, onDone } = useNostrEvents({
+  const { isLoading, onEvent, onDone } = useEvents({
     filter: filter,
   });
   onEvent((event) => setSigner(event));

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { useKeys } from "@/app/_providers/keysProvider";
 import EditProfile from "@/components/modals/EditProfile";
 import { useModal } from "@/app/_providers/modalContext/provider";
-import { useNostrEvents } from "nostr-react";
 import { Kind } from "@/lib/nostr";
 import { z } from "zod";
 import ListHeader from "./_components/ListHeader";

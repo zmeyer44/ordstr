@@ -2,7 +2,7 @@ import { useState } from "react";
 import { User } from "@/types";
 import FormModal from "./FormModal";
 import { z } from "zod";
-import { useNostrEvents } from "nostr-react";
+import useEvents from "@/lib/hooks/useEvents";
 import { createEvent } from "@/lib/actions/create";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
@@ -30,7 +30,7 @@ export default function EditProfile({ user }: EditProfileModalProps) {
   const [newData, setNewData] = useState<string | null>(null);
   const { currentUser, updateUser } = useCurrentUser();
   const { ndk } = useNDK();
-  const { onDone } = useNostrEvents({
+  const { onDone } = useEvents({
     filter: {
       kinds: [0],
       authors: [currentUser?.pubkey as string],

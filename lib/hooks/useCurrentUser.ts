@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import currentUserStore from "@/lib/stores/currentUser";
-import { useNostrEvents } from "nostr-react";
-import { Kind } from "@/lib/nostr";
+import useEvents from "@/lib/hooks/useEvents";
 import { UserSchema } from "@/types";
 
 export default function useCurrentUser() {
@@ -12,9 +11,9 @@ export default function useCurrentUser() {
     events: contactList,
     isLoading,
     onEvent,
-  } = useNostrEvents({
+  } = useEvents({
     filter: {
-      kinds: [Kind.Contacts],
+      kinds: [3],
       authors: [currentUser?.pubkey ?? ""],
       limit: 1,
     },

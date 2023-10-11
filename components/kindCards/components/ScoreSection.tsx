@@ -5,11 +5,11 @@ import {
   RxThickArrowDown,
 } from "react-icons/rx";
 import { cn, formatCount } from "@/lib/utils";
-import { useNostrEvents } from "nostr-react";
 import { Kind } from "@/lib/nostr";
 import { createReaction, deleteEvent } from "@/lib/actions/create";
 import { useNDK } from "@/app/_providers/ndkProvider";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
+import useEvents from "@/lib/hooks/useEvents";
 type ScoreSectionProps = {
   id: string;
   pubkey: string;
@@ -20,14 +20,12 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
   const [active, setActive] = useState("UP");
   const [mounted] = useState(true);
   const { ndk } = useNDK();
-
-  const { events: reactionEvents } = useNostrEvents({
+  const { events: reactionEvents } = useEvents({
     filter: {
-      kinds: [Kind.Reaction],
+      kinds: [7],
       ["#e"]: [id],
       ["#p"]: [pubkey],
     },
-    enabled: mounted,
   });
 
   const score = useMemo(() => {
