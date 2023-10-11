@@ -12,7 +12,7 @@ import { randomId } from "@/lib/nostr";
 import { useNDK } from "@/app/_providers/ndkProvider";
 import { useLists } from "@/app/_providers/listProvider";
 const CreateListSchema = z.object({
-  name: z.string(),
+  title: z.string(),
   picture: z.string().optional(),
   description: z.string().optional(),
 });
@@ -48,8 +48,8 @@ export default function CreateList() {
     setIsLoading(true);
     const random = randomId();
     const tags = [
-      ["name", data.name],
-      ["title", data.name],
+      ["title", data.title],
+      ["name", data.title],
       ["d", random],
     ];
     if (data.description) {
@@ -70,9 +70,9 @@ export default function CreateList() {
       title="Create List"
       fields={[
         {
-          label: "Name",
+          label: "Title",
           type: "input",
-          slug: "name",
+          slug: "title",
         },
         {
           label: "Description",

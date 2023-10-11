@@ -17,6 +17,7 @@ import { useLists } from "@/app/_providers/listProvider";
 import { NDKList, NDKUser } from "@nostr-dev-kit/ndk";
 import useUserLists from "@/lib/hooks/useUserLists";
 import CreateListEvent from "@/components/modals/CreateListEventControl";
+import EditListModal from "@/components/modals/EditList";
 
 const AddrSchema = z.object({
   identifier: z.string(),
@@ -75,6 +76,19 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
                         }
                       >
                         Add to List
+                      </Button>
+                    ),
+                  },
+                  {
+                    element: () => (
+                      <Button
+                        size="sm"
+                        variant="accent-outline"
+                        onClick={() =>
+                          modal?.show(<EditListModal listEvent={rawEvent} />)
+                        }
+                      >
+                        Edit
                       </Button>
                     ),
                   },

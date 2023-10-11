@@ -20,6 +20,7 @@ import { getHashedKeyName } from "@/lib/nostr";
 import { dateToUnix } from "nostr-react";
 import { NostrService } from "@/lib/nostr";
 import { type SignerStoreItem } from "@/app/_providers/signerProvider";
+import { getTagValues } from "../nostr/utils";
 
 export async function createEvent(
   ndk: NDK,
@@ -177,4 +178,26 @@ export async function createEventOnList(
   await list.sign();
   await list.publish();
   return true;
+}
+
+export async function updateList(
+  ndk: NDK,
+  list: NostrEvent,
+  newTags: [string, string][],
+) {
+  let tags = list.tags;
+  for (const [key, value] of newTags) {
+    const index = tags.findIndex(([tK]) => tK === key);
+    if (index !== -1) {
+      // Replace old
+      tags[index] = [key, value];
+    } else {
+      tags.push([key, value]);
+    }
+  }
+  console.log("updating list", tags);
+  return createEvent(ndk, {
+    ...list,
+    tags: tags.filter(([_, value]) => value !== undefined),
+  });
 }

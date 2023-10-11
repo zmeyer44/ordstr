@@ -15,9 +15,11 @@ type ListHeaderProps = {
 
 export default function ListHeader({ event, actions }: ListHeaderProps) {
   const identifier = getTagValues("d", event.tags);
-  const name =
+  const title =
+    getTagValues("title", event.tags) ??
     getTagValues("name", event.tags) ??
-    (getTagValues("title", event.tags) || "List");
+    getTagValues("d", event.tags) ??
+    "List";
   const picture = getTagValues("picture", event.tags);
   const description = getTagValues("description", event.tags);
   const naddr = nip19.naddrEncode({
@@ -50,7 +52,7 @@ export default function ListHeader({ event, actions }: ListHeaderProps) {
               <Avatar className="h-full w-full overflow-hidden  rounded-xl border-2 bg-accent/60">
                 <AvatarImage className="bg-transparent" src={picture} />
                 <AvatarFallback className="bg-transparent text-[24px] uppercase leading-5 @md:text-[32px]">
-                  {name.at(0)}
+                  {title.at(0)}
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -67,7 +69,7 @@ export default function ListHeader({ event, actions }: ListHeaderProps) {
           <div className="@lg:space-y-1.5">
             <div className="flex items-end gap-x-3 truncate">
               <h1 className="text-lg font-semibold @md:text-xl  @lg:text-2xl">
-                {name}
+                {title}
               </h1>
             </div>
             <div className="">
