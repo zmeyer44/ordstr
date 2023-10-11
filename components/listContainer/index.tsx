@@ -21,10 +21,11 @@ type ListContainerProps = {
 };
 export default function ListContainer({ pubkey }: ListContainerProps) {
   const modal = useModal();
-  const { user } = useProfile(pubkey);
+  const { profile } = useProfile(pubkey);
   const { currentUser } = useCurrentUser();
   const npub = nip19.npubEncode(pubkey);
-  const { sortedLists, isLoading } = useUserLists({
+
+  const { lists, isLoading } = useUserLists({
     pubkey,
   });
 
@@ -32,9 +33,7 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
     <Card className="bg-background">
       <CardHeader className="flex h-[43px] flex-row items-center justify-between space-y-0 py-2">
         <CardTitle>{`${
-          user?.profile?.displayName ??
-          user?.profile?.name ??
-          truncateText(npub)
+          profile?.displayName ?? profile?.name ?? truncateText(npub)
         }'s Lists`}</CardTitle>
         {currentUser?.hexpubkey === pubkey && (
           <button
@@ -49,15 +48,14 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
       <CardContent className="p-0">
         <>
           <ul className="divide-y">
-            {sortedLists
+            {lists
               .filter((l) => l.kind === Kind.GenericList)
               .map((e) => (
                 <EventListItem key={e.id} event={e.rawEvent()} />
               ))}
           </ul>
           {!isLoading &&
-            sortedLists.filter((l) => l.kind === Kind.GenericList).length ===
-              0 && (
+            lists.filter((l) => l.kind === Kind.GenericList).length === 0 && (
               <div className="center py-3 text-sm text-primary">
                 <p className="">No lists found</p>
               </div>
@@ -78,7 +76,9 @@ type EventListItemProps = {
 };
 function EventListItem({ event }: EventListItemProps) {
   const name =
-    getTagValues("name", event.tags) ?? getTagValues("title", event.tags);
+    getTagValues("title", event.tags) ??
+    getTagValues("name", event.tags) ??
+    getTagValues("d", event.tags);
   const description = getTagValues("description", event.tags);
   const picture = getTagValues("picture", event.tags);
   const identifier = getTagValues("d", event.tags);

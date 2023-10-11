@@ -122,11 +122,14 @@ export async function saveEphemeralSigner(
   targetSigner: NDKPrivateKeySigner,
   opts: ISaveOpts = {},
 ) {
+  // Determine current user signer
   const mainSigner = opts.mainSigner || ndk.signer;
 
   if (!mainSigner) throw new Error("No main signer provided");
 
   const mainUser = await mainSigner.user();
+
+  // Create 2600 kind which saves encrypted JSON of the ephemeral signer's private key, the associated list, and other metadata
   const event = new NDKEvent(ndk, {
     kind: 2600,
     content: generateContent(targetSigner, opts),
@@ -136,7 +139,7 @@ export async function saveEphemeralSigner(
   await event.encrypt(mainUser, mainSigner);
   await event.publish();
 
-  // XXX Extract this to NDK
+  // Update Ephemeral signers metadata
   if (opts.keyProfile) {
     const user = await targetSigner.user();
     const event = new NDKEvent(ndk, {

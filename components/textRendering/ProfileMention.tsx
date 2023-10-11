@@ -3,6 +3,7 @@ import useProfile from "@/lib/hooks/useProfile";
 import Link from "next/link";
 import { nip19 } from "nostr-tools";
 import { NOSTR_BECH32_REGEXP } from "@/lib/nostr/utils";
+import { useNDK } from "@/app/_providers/ndkProvider";
 type ProfileMentionProps = {
   mention: string;
 };
@@ -20,11 +21,13 @@ function getPubkey(mention: string) {
 
 export default function ProfileMention({ mention }: ProfileMentionProps) {
   const pubkey = getPubkey(mention);
-  const { user } = useProfile(pubkey);
+  // const { user } = useProfile(pubkey);
+  const { getProfile } = useNDK();
+  const profile = getProfile(mention);
   return (
     <Link href={`/${mention}`}>
       <span className="text-primary-foreground hover:underline">{`@${
-        user?.profile?.name ?? mention
+        profile?.name ?? mention
       }`}</span>
     </Link>
   );

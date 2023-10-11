@@ -9,16 +9,18 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "@/types";
 import { RenderText } from "../textRendering";
 import { nip19 } from "nostr-tools";
-import { type NDKUser } from "@nostr-dev-kit/ndk";
+import { type NDKUserProfile } from "@nostr-dev-kit/ndk";
+import useProfile from "@/lib/hooks/useProfile";
 
 type MediumCardProps = {
   pubkey: string;
-  user?: NDKUser;
+  profile?: NDKUserProfile;
   actions?: { element: () => JSX.Element }[];
 };
 
-export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
+export default function MediumCard({ pubkey, actions }: MediumCardProps) {
   const npub = nip19.npubEncode(pubkey);
+  const { profile } = useProfile(pubkey);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
   return (
     <Card className="relative w-full rounded-xl @container">
@@ -32,10 +34,7 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
       <div className="relative max-h-[150px] overflow-hidden">
         <div className="relative bg-background pb-[80px] @md:pb-[20%]">
           <div className="absolute inset-0 max-h-[150px] bg-accent/40">
-            <img
-              src={user?.profile?.banner}
-              className="h-full w-full object-cover"
-            />
+            <img src={profile?.banner} className="h-full w-full object-cover" />
           </div>
         </div>
       </div>
@@ -48,31 +47,31 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
               <Avatar className="h-full w-full border-2 bg-accent/60">
                 <AvatarImage
                   className="bg-transparent"
-                  src={user?.profile?.image ?? user?.profile?.picture}
+                  src={profile?.image ?? profile?.picture}
                 />
                 <AvatarFallback className="bg-transparent text-[24px] uppercase leading-5 @md:text-[32px]">
-                  {user?.profile?.displayName
-                    ? user.profile?.displayName.at(0)
-                    : user?.profile?.name?.at(0) ?? npub.at(0)}
+                  {profile?.displayName
+                    ? profile?.displayName.at(0)
+                    : profile?.name?.at(0) ?? npub.at(0)}
                 </AvatarFallback>
               </Avatar>
             </div>
           </div>
           <div className="ml-auto flex items-center gap-x-3 py-2">
             {actions?.map(({ element: Element }, idx) => <Element key={idx} />)}
-            {/* {sessionData?.user?.ordinalsAddress === user.ordinalsAddress ? (
+            {/* {sessionData?.ordinalsAddress === ordinalsAddress ? (
                 <Link
                   href="/settings/profile"
                   className="relative flex cursor-pointer items-center gap-x-2 rounded-md border-foreground bg-foreground px-3 py-1 transition-all hover:bg-foreground-hover"
                 >
                   <MdEdit className="h-4 w-4" /> Edit
-                  {!user.displayName && (
+                  {!displayName && (
                     <div className="absolute inset-0 animate-ping rounded-md bg-text" />
                   )}
                 </Link>
               ) : null} */}
             <div className="rounded-md bg-foreground">
-              {/* <ShareButton ordinalsAddress={user.ordinalsAddress} /> */}
+              {/* <ShareButton ordinalsAddress={ordinalsAddress} /> */}
             </div>
           </div>
         </div>
@@ -81,20 +80,18 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
           <div className="@lg:space-y-1.5">
             <div className="flex items-end gap-x-3 truncate">
               <h1 className="text-lg font-semibold @md:text-xl  @lg:text-2xl">
-                {user?.profile?.displayName ??
-                  user?.profile?.name ??
-                  truncateText(npub)}
+                {profile?.displayName ?? profile?.name ?? truncateText(npub)}
               </h1>
 
-              {!!user?.profile?.nip05 && (
+              {!!profile?.nip05 && (
                 <div className="center gap-x-2">
                   <span className="mb-1 truncate text-sm font-light text-accent @lg:text-[16px]">
-                    {user.profile.nip05}
+                    {profile.nip05}
                   </span>
                   {showFaviconImage && (
                     <Image
-                      alt={user.profile.nip05.split("@").at(-1) as string}
-                      src={`https://www.google.com/s2/favicons?domain=${user.profile.nip05}
+                      alt={profile.nip05.split("@").at(-1) as string}
+                      src={`https://www.google.com/s2/favicons?domain=${profile.nip05}
                         .split("@")
                         .at(-1)}&size=128`}
                       height={16}
@@ -125,7 +122,7 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
           {/* About */}
           <div className="max-w-lg @lg:max-w-3xl">
             <p className="text-text-strong text-[14px] font-light @lg:text-[15px]">
-              <RenderText text={user?.profile?.about ?? ""} />
+              <RenderText text={profile?.about ?? ""} />
             </p>
           </div>
         </div>

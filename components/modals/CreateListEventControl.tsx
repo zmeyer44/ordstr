@@ -25,7 +25,6 @@ import Template from "./Template";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -45,8 +44,16 @@ import { toast } from "react-hot-toast";
 import { useNDK } from "@/app/_providers/ndkProvider";
 import { createEvent, createEventOnList } from "@/lib/actions/create";
 import { createZodFetcher } from "zod-fetch";
-import { NDKList } from "@nostr-dev-kit/ndk";
+import { NDKEvent, NDKList } from "@nostr-dev-kit/ndk";
 import { NostrEvent } from "@nostr-dev-kit/ndk";
+import {
+  useSigner,
+  type SignerStoreItem,
+} from "@/app/_providers/signerProvider";
+import { getTagValues } from "@/lib/nostr/utils";
+import { saveEphemeralSigner } from "@/lib/actions/ephemeral";
+import useCurrentUser from "@/lib/hooks/useCurrentUser";
+
 const fetchWithZod = createZodFetcher();
 
 const metadataSchema = z.object({
@@ -121,9 +128,16 @@ function handleFetchMetadata(url: string) {
 export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   const modal = useModal();
   const [isLoading, setIsLoading] = useState(false);
+  const [delegateSigner, setDelegateSigner] = useState<SignerStoreItem>();
+  const [fetchingSigner, setFetchingSigner] = useState(false);
   const [metadata, setMetadata] = useState<MetadataType | null>(null);
   const [content, setContent] = useState<string | null>(null);
   const { ndk, signer } = useNDK();
+  const { currentUser } = useCurrentUser();
+  const listTitle =
+    getTagValues("title", listEvent.tags) ??
+    getTagValues("name", listEvent.tags);
+  const { getSigner } = useSigner()!;
 
   async function onSubmit(data: CreateListEventType) {
     setIsLoading(true);
@@ -135,6 +149,29 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
         }
       });
     }
+
+    if (data.sender === "delegate" && !delegateSigner?.saved) {
+      // Ephemeral key must be saved
+      if (!delegateSigner?.signer) {
+        toast.error("No signer created");
+        return;
+      }
+      try {
+        await saveEphemeralSigner(ndk!, delegateSigner.signer, {
+          associatedEvent: new NDKEvent(ndk, listEvent),
+          keyProfile: {
+            name: delegateSigner.title,
+            picture: currentUser?.profile?.image,
+            lud06: currentUser?.profile?.lud06,
+            lud16: currentUser?.profile?.lud16,
+          },
+        });
+        console.log("Ephemeral signer created!");
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    }
     const result = await createEventOnList(
       ndk!,
       {
@@ -143,7 +180,7 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
         tags: tags,
       },
       new NDKList(ndk, listEvent),
-      data.sender === "delegate",
+      data.sender === "delegate" ? delegateSigner?.signer : undefined,
     );
     setContent(data.content ?? "");
     console.log("Result", result);
@@ -162,8 +199,18 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   });
   const { watch } = form;
   const link = watch("link");
+  const sender = watch("sender");
   const debouncedLink = useDebounce<string>(link, 500);
 
+  useEffect(() => {
+    if (sender === "delegate") {
+      setFetchingSigner(true);
+      console.log("Calling get signer");
+      void getSigner(new NDKList(ndk, listEvent))
+        .then((r) => setDelegateSigner(r))
+        .finally(() => setFetchingSigner(false));
+    }
+  }, [sender]);
   useEffect(() => {
     if (validateUrl(debouncedLink)) {
       handleFetchMetadata(debouncedLink)
@@ -250,7 +297,11 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
             />
           ))}
 
-          <Button type="submit" className="w-full" loading={isLoading}>
+          <Button
+            type="submit"
+            className="w-full"
+            loading={isLoading || fetchingSigner}
+          >
             Publish
           </Button>
         </form>

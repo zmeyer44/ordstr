@@ -19,6 +19,7 @@ import NDK, {
 import { getHashedKeyName } from "@/lib/nostr";
 import { dateToUnix } from "nostr-react";
 import { NostrService } from "@/lib/nostr";
+import { type SignerStoreItem } from "@/app/_providers/signerProvider";
 
 export async function createEvent(
   ndk: NDK,
@@ -95,16 +96,6 @@ export async function deleteEvent(
   });
 }
 
-export let listSigner: NDKPrivateKeySigner | undefined = undefined;
-
-function getSigner(ndk: NDK, signer: "self" | "delegated"): NDKSigner {
-  if (signer === "delegated") {
-    return listSigner!;
-  }
-  console.log("GetSigner not dleegated");
-  return ndk.signer!;
-}
-
 async function generateEvent(
   ndk: NDK,
   event: {
@@ -112,7 +103,7 @@ async function generateEvent(
     kind: number;
     tags: string[][];
   },
-  delegate: boolean,
+  delegateSigner?: NDKPrivateKeySigner,
 ): Promise<NDKTag | undefined> {
   let _value = event.content.trim();
 
@@ -150,7 +141,7 @@ async function generateEvent(
     }
   } catch (e) {
     console.log("at catch", e);
-    const signer = getSigner(ndk, delegate ? "delegated" : "self");
+    const signer = delegateSigner ?? ndk.signer!;
     console.log("Signer", signer);
     const user = await signer.user();
     console.log("User", user);
@@ -177,9 +168,9 @@ export async function createEventOnList(
     tags: string[][];
   },
   list: NDKList,
-  delegate: boolean,
+  delegateSigner?: NDKPrivateKeySigner,
 ) {
-  const tag = await generateEvent(ndk, event, delegate);
+  const tag = await generateEvent(ndk, event, delegateSigner);
 
   if (!tag) return;
   await list.addItem(tag, undefined, false);

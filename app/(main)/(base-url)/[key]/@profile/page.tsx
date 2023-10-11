@@ -22,15 +22,13 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
   const modal = useModal();
   console.log("nip data", data.toString(), type);
   const pubkey = data.toString();
-
-  const { user } = useProfile(pubkey);
+  const { profile, isLoading } = useProfile(pubkey);
 
   return (
     <div className="screen-container mx-auto flex flex-col items-stretch gap-x-6 gap-y-6 py-10">
       <div className="flex flex-1">
         <MediumProfileCard
           pubkey={pubkey}
-          user={user}
           actions={
             keys?.keys.pubkey === pubkey
               ? [
@@ -38,7 +36,9 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
                     element: () => (
                       <Button
                         size="sm"
-                        onClick={() => modal?.show(<EditProfile user={user} />)}
+                        onClick={() =>
+                          modal?.show(<EditProfile profile={profile} />)
+                        }
                       >
                         Edit
                       </Button>
@@ -53,7 +53,7 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
         <div className="sm:hidden">
           <ListContainer pubkey={pubkey} />
         </div>
-        <div className="flex-3 flex overflow-x-hidden">
+        <div className="flex flex-3 overflow-x-hidden">
           <Feed
             filter={{
               authors: [pubkey],

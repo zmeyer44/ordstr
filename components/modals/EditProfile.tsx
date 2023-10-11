@@ -9,6 +9,7 @@ import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { toast } from "react-hot-toast";
 import { useNDK } from "@/app/_providers/ndkProvider";
+import { type NDKUserProfile } from "@nostr-dev-kit/ndk";
 
 const EditProfileSchema = z.object({
   display_name: z.string().optional(),
@@ -22,9 +23,9 @@ const EditProfileSchema = z.object({
 type EditProfileType = z.infer<typeof EditProfileSchema>;
 
 type EditProfileModalProps = {
-  user?: User;
+  profile?: NDKUserProfile;
 };
-export default function EditProfile({ user }: EditProfileModalProps) {
+export default function EditProfile({ profile }: EditProfileModalProps) {
   const modal = useModal();
   const [isLoading, setIsLoading] = useState(false);
   const [newData, setNewData] = useState<string | null>(null);
@@ -101,7 +102,7 @@ export default function EditProfile({ user }: EditProfileModalProps) {
           placeholder: "name@example.com",
         },
       ]}
-      defaultValues={user ?? {}}
+      defaultValues={profile ?? {}}
       formSchema={EditProfileSchema}
       onSubmit={handleSubmit}
       isSubmitting={isLoading}

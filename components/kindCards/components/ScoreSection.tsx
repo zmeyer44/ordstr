@@ -10,6 +10,7 @@ import { createReaction, deleteEvent } from "@/lib/actions/create";
 import { useNDK } from "@/app/_providers/ndkProvider";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import useEvents from "@/lib/hooks/useEvents";
+import useElementOnScreen from "@/lib/hooks/useElementOnScreen";
 type ScoreSectionProps = {
   id: string;
   pubkey: string;
@@ -17,8 +18,11 @@ type ScoreSectionProps = {
 
 export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
   const { currentUser } = useCurrentUser();
-  const [active, setActive] = useState("UP");
-  const [mounted] = useState(true);
+  const { isVisible, containerRef: scoreRef } = useElementOnScreen({
+    root: null,
+    rootMargin: "0px 0px 0px 0px",
+    threshold: 0.1,
+  });
   const { ndk } = useNDK();
   const { events: reactionEvents } = useEvents({
     filter: {
@@ -26,6 +30,7 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
       ["#e"]: [id],
       ["#p"]: [pubkey],
     },
+    enabled: isVisible,
   });
 
   const score = useMemo(() => {
@@ -52,7 +57,10 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
     });
   }
   return (
-    <div className="group relative flex w-full flex-col items-stretch overflow-hidden">
+    <div
+      ref={scoreRef}
+      className="group relative flex w-full flex-col items-stretch overflow-hidden"
+    >
       <button
         onClick={(e) => {
           void handleVote("+");

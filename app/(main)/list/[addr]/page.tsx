@@ -29,16 +29,19 @@ type ListPageProps = {
 };
 
 export default function ListPage({ params: { addr } }: ListPageProps) {
-  const { data } = nip19.decode(addr);
+  const { data, type } = nip19.decode(addr);
   const addrData = AddrSchema.parse(data);
   const pubkey = addrData.pubkey;
-  const { lists, isLoading } = useUserLists({ pubkey });
+  const { lists, isLoading } = useUserLists({
+    pubkey,
+    filter: {
+      ["#d"]: [type === "naddr" ? data.identifier : ""],
+    },
+  });
   const keys = useKeys();
   const modal = useModal();
-  const list = lists.get(
-    `${addrData.kind}:${addrData.pubkey}:${addrData.identifier}`,
-  );
-
+  const list = lists[0];
+  console.log(list);
   if (isLoading) {
     return (
       <div className="center py-10">

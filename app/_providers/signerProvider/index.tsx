@@ -21,7 +21,7 @@ export type SignerStoreItem = {
   signer: NDKPrivateKeySigner;
   user: NDKUser;
   saved: boolean;
-  name?: string;
+  title?: string;
   id: string;
 };
 type SignerItems = Map<string, SignerStoreItem>;
@@ -52,22 +52,17 @@ export default function SignerProvider({
 
   async function getDelegatedSignerName(list: NDKList) {
     let name = "";
-    if (!currentUser) return;
-    const user = new NDKUser({
-      hexpubkey: currentUser.pubkey,
-      nip05: currentUser.nip05,
-      npub: currentUser.npub,
-    });
-
-    if (!user?.profile) {
-      user.ndk = ndk;
-      await user?.fetchProfile();
+    console.log("getDelegatedSignerName");
+    if (!currentUser?.profile) {
+      console.log("fetching user profile");
+      await currentUser?.fetchProfile();
     }
-    if (user?.profile?.displayName) {
-      name = user.profile.displayName + `'s `;
-    } else if (user?.profile?.name) {
-      name = user.profile.name + `'s `;
-    }
+    name = `${
+      currentUser?.profile?.displayName ??
+      currentUser?.profile?.name ??
+      currentUser?.profile?.nip05 ??
+      `${currentUser?.npub.slice(0, 9)}...`
+    }'s `;
 
     return name + list.title;
   }
@@ -81,7 +76,7 @@ export default function SignerProvider({
     });
 
     if (signer) {
-      console.log(`found a signer for list ${list.name}`);
+      console.log(`found a signer for list ${list.title}`);
       item = {
         signer: signer!,
         user: await signer.user(),
@@ -89,7 +84,9 @@ export default function SignerProvider({
         id,
       };
     } else {
+      console.log(`no signer found for list ${list.title}`);
       signer = NDKPrivateKeySigner.generate();
+      console.log(`Signer generated ${JSON.stringify(signer)}`);
       item = {
         signer,
         user: await signer.user(),
@@ -99,7 +96,7 @@ export default function SignerProvider({
       };
     }
     item.user.ndk = ndk;
-    setSigners((prev) => prev.set(id, item));
+    setSigners((prev) => new Map(prev.set(id, item)));
     return item;
   }
 

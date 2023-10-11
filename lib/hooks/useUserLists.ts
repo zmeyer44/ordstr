@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useLists } from "@/app/_providers/listProvider";
 import { NDKFilter } from "@nostr-dev-kit/ndk";
+import useEvents from "@/lib/hooks/useEvents";
 
 export default function useUserLists({
   pubkey,
@@ -10,20 +11,15 @@ export default function useUserLists({
   pubkey: string;
   filter?: NDKFilter;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { lists, sortedLists, sortedListWithKind, getLists } = useLists()!;
+  console.log(filter);
+  // const { lists, sortedLists, sortedListWithKind, getLists } = useLists()!;
+  const { events: lists, isLoading } = useEvents({
+    filter: {
+      kinds: [30001],
+      authors: [pubkey],
+      ...filter,
+    },
+  });
 
-  useEffect(() => {
-    setIsLoading(true);
-    const sub = getLists(pubkey, filter);
-    if (sub) {
-      sub.on("eose", () => setIsLoading(false));
-    }
-    return () => {
-      if (sub) {
-        sub.stop();
-      }
-    };
-  }, []);
-  return { lists, sortedLists, isLoading };
+  return { lists, isLoading };
 }
