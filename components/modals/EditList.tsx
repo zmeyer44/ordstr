@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "@/types";
 import FormModal from "./FormModal";
 import { z } from "zod";
@@ -29,35 +29,30 @@ export default function EditList({ listEvent }: EditListModalProps) {
   const [sent, setSent] = useState(false);
   const { currentUser, updateUser } = useCurrentUser();
   const { ndk } = useNDK();
-  const { onDone } = useEvents({
+  const { events } = useEvents({
     filter: {
       kinds: [listEvent.kind],
-      authors: [currentUser?.hexpubkey as string],
-      since: unixTimeNowInSeconds(),
+      authors: [listEvent.pubkey],
+      since: unixTimeNowInSeconds() - 10,
       limit: 1,
     },
     enabled: sent,
   });
-  //   onEvent((event) => {
-  //     console.log("Event", event);
-  //     if (event.content === newData) {
-  //       updateUser(event.content);
-  //       setIsLoading(false);
-  //       toast.success("List Updated!");
-  //       modal?.hide();
-  //     }
-  //   });
-  onDone(() => {
-    console.log("Done!");
-    setIsLoading(false);
-    toast.success("List Updated!");
-    modal?.hide();
-  });
+  useEffect(() => {
+    if (events.length) {
+      console.log("Done!");
+      setIsLoading(false);
+      toast.success("List Updated!");
+      modal?.hide();
+    }
+  }, [events]);
+
   async function handleSubmit(listData: EditListType) {
     setIsLoading(true);
     const newTags = Object.entries(listData);
-    const result = await updateList(ndk!, listEvent, newTags);
     setSent(true);
+    console.log("CURRent time", unixTimeNowInSeconds());
+    const result = await updateList(ndk!, listEvent, newTags);
   }
   const defaultValues: Partial<EditListType> = {
     title:

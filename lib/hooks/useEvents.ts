@@ -34,7 +34,6 @@ export default function useEvents({
   const { ndk } = useNDK();
 
   useEffect(() => {
-    console.log("useEvents", filter);
     if (!enabled || !ndk) return;
     void init();
     return () => {
