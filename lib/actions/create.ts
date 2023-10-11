@@ -198,6 +198,7 @@ export async function updateList(
   console.log("updating list", tags);
   return createEvent(ndk, {
     ...list,
+    kind: list.kind as number,
     tags: tags.filter(([_, value]) => value !== undefined),
   });
 }
