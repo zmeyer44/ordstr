@@ -13,7 +13,7 @@ import { randomId } from "@/lib/nostr";
 
 const CreateListEventSchema = z.object({
   content: z.string(),
-  link: z.string(),
+  link: z.string().url(),
   sender: z.enum(["self", "delegate"]).optional(),
 });
 
@@ -66,6 +66,7 @@ export default function CreateListEvent({ listAddress }: CreateListEventProps) {
           label: "Link",
           type: "input",
           slug: "link",
+          placeholder: "https://",
         },
         {
           label: "Notes",

@@ -34,6 +34,7 @@
     "framer-motion": "^10.16.4",
     "metadata-scraper": "^0.2.61",
     "next": "13.5.4",
+    "node-html-parser": "^6.1.10",
     "nostr-react": "^0.7.0",
     "nostr-tools": "^1.16.0",
     "ramda": "^0.29.1",

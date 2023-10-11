@@ -120,7 +120,11 @@ export default function FormModal<TSchema extends FieldValues>({
                       </FormControl>
                     ) : type === "text-area" ? (
                       <FormControl>
-                        <Textarea placeholder={placeholder} {...field} />
+                        <Textarea
+                          placeholder={placeholder}
+                          {...field}
+                          className="auto-sizing"
+                        />
                       </FormControl>
                     ) : type === "select" ? (
                       <Select

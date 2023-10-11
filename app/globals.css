@@ -94,3 +94,6 @@
   justify-content: stretch;
   width: 100%;
 }
+.auto-sizing {
+  form-sizing: content;
+}
