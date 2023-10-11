@@ -46,11 +46,6 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
 
       <CardContent className="p-0">
         <>
-          {isLoading && (
-            <div className="center py-5">
-              <Spinner />
-            </div>
-          )}
           <ul className="divide-y">
             {sortedLists
               .filter((l) => l.kind === Kind.GenericList)
@@ -61,6 +56,11 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
           {!isLoading && sortedLists.length === 0 && (
             <div className="center py-3 text-sm text-primary">
               <p className="">No lists found</p>
+            </div>
+          )}
+          {isLoading && (
+            <div className="center py-5">
+              <Spinner />
             </div>
           )}
         </>

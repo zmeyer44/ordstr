@@ -1,33 +1,92 @@
-"use client";
-import { useMemo, useRef } from "react";
-import { useNostrEvents } from "nostr-react";
-import { nip19, type Filter } from "nostr-tools";
-import { useSearchParams } from "next/navigation";
-import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
+import { useState, useEffect } from "react";
+import { useNDK } from "@/app/_providers/ndkProvider";
+import {
+  NDKEvent,
+  type NDKFilter,
+  type NDKSubscription,
+} from "@nostr-dev-kit/ndk";
+import { log } from "@/lib/utils";
+import { uniqBy } from "ramda";
+import { Relay, Event as NostrEvent, Sub } from "nostr-tools";
+
+const debug = true;
+type OnEventFunc = (event: NostrEvent) => void;
+type OnDoneFunc = () => void;
+type OnSubscribeFunc = (sub: NDKSubscription) => void;
 type UseEventsProps = {
-  filter?: Filter;
+  filter: NDKFilter;
+  enabled?: boolean;
+  eventFilter?: (e: NDKEvent) => boolean;
 };
-export default function useEvents({ filter: initialFilter }: UseEventsProps) {
-  const searchParams = useSearchParams();
 
-  const filter = useMemo<Filter>(() => {
-    const buildingFilter: Filter = {
-      limit: 50,
-      until: unixTimeNowInSeconds(),
-      ...initialFilter,
+export default function useEvents({
+  filter,
+  enabled = true,
+  eventFilter = () => true,
+}: UseEventsProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [sub, setSub] = useState<NDKSubscription | undefined>(undefined);
+  const [events, setEvents] = useState<NDKEvent[]>([]);
+  const [eventIds, setEventIds] = useState<Set<string>>(new Set());
+  let onEventCallback: null | OnEventFunc = null;
+  let onSubscribeCallback: null | OnSubscribeFunc = null;
+  let onDoneCallback: null | OnDoneFunc = null;
+  const { ndk } = useNDK();
+
+  useEffect(() => {
+    if (!enabled) return;
+    void init();
+    return () => {
+      console.log("STOPPING");
+      if (sub) {
+        sub.stop();
+      }
     };
-    if (searchParams.has("t")) {
-      buildingFilter["#t"] = searchParams.getAll("t");
-    }
-    return buildingFilter;
-  }, [searchParams]);
-  const { events, isLoading } = useNostrEvents({
-    filter: {
-      //   since: dateToUnix(now.current),
-      ...filter,
-    },
-  });
-  // onEvent((event) => addPubkey(event.pubkey));
+  }, [filter, enabled]);
 
-  return { events, isLoading };
+  async function init() {
+    console.log("Running init");
+    setIsLoading(true);
+    try {
+      const sub = ndk!.subscribe(filter, { closeOnEose: false });
+      setSub(sub);
+      onSubscribeCallback?.(sub);
+      sub.on("event", (e, r) => {
+        if (eventIds.has(e.id)) {
+          return;
+        }
+        if (eventFilter(e)) {
+          setEvents((prevEvents) => {
+            const events = [...prevEvents, e];
+            return events.sort((a, b) => b.created_at - a.created_at);
+          });
+          setEventIds((prev) => prev.add(e.id));
+        }
+      });
+    } catch (err) {
+      log(debug, "error", `❌ nostr (${err})`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return {
+    isLoading,
+    events,
+    onEvent: (_onEventCallback: OnEventFunc) => {
+      if (_onEventCallback) {
+        onEventCallback = _onEventCallback;
+      }
+    },
+    onDone: (_onDoneCallback: OnDoneFunc) => {
+      if (_onDoneCallback) {
+        onDoneCallback = _onDoneCallback;
+      }
+    },
+    onSubscribe: (_onSubscribeCallback: OnSubscribeFunc) => {
+      if (_onSubscribeCallback) {
+        onSubscribeCallback = _onSubscribeCallback;
+      }
+    },
+  };
 }

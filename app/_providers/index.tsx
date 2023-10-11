@@ -6,9 +6,7 @@ import { Toaster } from "react-hot-toast";
 import TRPCProvider from "./trpc";
 import { ModalProvider } from "./modalContext/provider";
 import useRouteChange from "@/lib/hooks/useRouteChange";
-import NostrProvider from "./nostrProvider";
 import KeysProvider from "./keysProvider";
-import RelayProvider from "./relayProvider";
 import ProfilesProvider from "./profilesProvider";
 import ProfileProvider from "./profileProvider";
 import SignerProvider from "./signerProvider";
@@ -26,48 +24,46 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useRouteChange(handleRouteChange);
   return (
     <>
-      <NostrProvider>
-        <NDKProvider
-          relayUrls={[
-            "wss://nostr.pub.wellorder.net",
-            "wss://nostr.drss.io",
-            "wss://nostr.swiss-enigma.ch",
-            "wss://relay.damus.io",
-          ]}
-        >
-          <SignerProvider>
-            <ListsProvider>
-              <TRPCProvider>
-                {/* <RelayProvider> */}
-                <ProfilesProvider>
-                  <ProfileProvider>
-                    <KeysProvider>
-                      <ModalProvider>{children}</ModalProvider>
-                    </KeysProvider>
-                  </ProfileProvider>
-                </ProfilesProvider>
-                {/* </RelayProvider> */}
-                <Toaster
-                  toastOptions={{
-                    className: "bg-gray-900 text-gray-200",
-                    style: {
-                      zIndex: 9999,
-                      background: "#1f2937",
-                      color: "#22d3ee",
+      <NDKProvider
+        relayUrls={[
+          "wss://nostr.pub.wellorder.net",
+          "wss://nostr.drss.io",
+          "wss://nostr.swiss-enigma.ch",
+          "wss://relay.damus.io",
+        ]}
+      >
+        <SignerProvider>
+          <ListsProvider>
+            <TRPCProvider>
+              {/* <RelayProvider> */}
+              <ProfilesProvider>
+                <ProfileProvider>
+                  <KeysProvider>
+                    <ModalProvider>{children}</ModalProvider>
+                  </KeysProvider>
+                </ProfileProvider>
+              </ProfilesProvider>
+              {/* </RelayProvider> */}
+              <Toaster
+                toastOptions={{
+                  className: "bg-gray-900 text-gray-200",
+                  style: {
+                    zIndex: 9999,
+                    background: "#1f2937",
+                    color: "#22d3ee",
+                  },
+                  success: {
+                    iconTheme: {
+                      primary: "#8d3201",
+                      secondary: "#22d3ee",
                     },
-                    success: {
-                      iconTheme: {
-                        primary: "#8d3201",
-                        secondary: "#22d3ee",
-                      },
-                    },
-                  }}
-                />
-              </TRPCProvider>
-            </ListsProvider>
-          </SignerProvider>
-        </NDKProvider>
-      </NostrProvider>
+                  },
+                }}
+              />
+            </TRPCProvider>
+          </ListsProvider>
+        </SignerProvider>
+      </NDKProvider>
     </>
   );
 }

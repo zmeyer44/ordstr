@@ -49,7 +49,6 @@ export default function ListPage({ params: { addr } }: ListPageProps) {
     return (
       <div className="center py-10">
         <p>No list found</p>
-        <p>{JSON.stringify(lists.size)}</p>
       </div>
     );
   }

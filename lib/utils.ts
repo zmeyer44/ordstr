@@ -123,3 +123,11 @@ export function formatNumber(number: number) {
     return number.toLocaleString("en-US");
   } else return "not a number";
 }
+export function log(
+  isOn: boolean | undefined,
+  type: "info" | "error" | "warn",
+  ...args: unknown[]
+) {
+  if (!isOn) return;
+  console[type](...args);
+}
