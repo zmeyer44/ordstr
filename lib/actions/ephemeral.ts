@@ -140,6 +140,7 @@ export async function saveEphemeralSigner(
   await event.publish();
 
   // Update Ephemeral signers metadata
+  console.log("Checking keyProfile", opts.keyProfile);
   if (opts.keyProfile) {
     const user = await targetSigner.user();
     const event = new NDKEvent(ndk, {

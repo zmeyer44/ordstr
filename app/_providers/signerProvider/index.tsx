@@ -91,7 +91,7 @@ export default function SignerProvider({
         signer,
         user: await signer.user(),
         saved: false,
-        name: await getDelegatedSignerName(list),
+        title: await getDelegatedSignerName(list),
         id,
       };
     }

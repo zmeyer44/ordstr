@@ -139,6 +139,7 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
         return;
       }
       try {
+        console.log("Delegate signer", delegateSigner);
         await saveEphemeralSigner(ndk!, delegateSigner.signer, {
           associatedEvent: new NDKEvent(ndk, listEvent),
           keyProfile: {
