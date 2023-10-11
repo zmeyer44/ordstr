@@ -96,20 +96,25 @@ export async function deleteEvent(
 }
 
 export let listSigner: NDKPrivateKeySigner | undefined = undefined;
+
 function getSigner(ndk: NDK, signer: "self" | "delegated"): NDKSigner {
   if (signer === "delegated") {
     return listSigner!;
   }
-
+  console.log("GetSigner not dleegated");
   return ndk.signer!;
 }
+
 async function generateEvent(
   ndk: NDK,
-  value: string,
+  event: {
+    content: string;
+    kind: number;
+    tags: string[][];
+  },
   delegate: boolean,
 ): Promise<NDKTag | undefined> {
-  let event: NDKEvent;
-  let _value = value.trim();
+  let _value = event.content.trim();
 
   // if this a relay URL, nrelay-encode it
   if (_value.startsWith("wss://")) {
@@ -144,20 +149,24 @@ async function generateEvent(
         return d;
     }
   } catch (e) {
+    console.log("at catch", e);
     const signer = getSigner(ndk, delegate ? "delegated" : "self");
+    console.log("Signer", signer);
     const user = await signer.user();
-    event = new NDKEvent(ndk, {
+    console.log("User", user);
+    const newEvent = new NDKEvent(ndk, {
       content: _value || "",
       kind: 1,
-      tags: [["client", "ordstr"]],
+      tags: [...event.tags, ["client", "ordstr"]],
       pubkey: user.hexpubkey,
     } as NostrEvent);
+    console.log("Event to create", newEvent);
 
-    await event.sign(signer);
+    await newEvent.sign(signer);
 
-    await event.publish();
+    await newEvent.publish();
 
-    return event.tagReference();
+    return newEvent.tagReference();
   }
 }
 export async function createEventOnList(
@@ -170,10 +179,9 @@ export async function createEventOnList(
   list: NDKList,
   delegate: boolean,
 ) {
-  const tag = await generateEvent(ndk, event.content, delegate);
+  const tag = await generateEvent(ndk, event, delegate);
 
   if (!tag) return;
-
   await list.addItem(tag, undefined, false);
   await list.sign();
   await list.publish();

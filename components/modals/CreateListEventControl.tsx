@@ -143,7 +143,7 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
         tags: tags,
       },
       new NDKList(ndk, listEvent),
-      false,
+      data.sender === "delegate",
     );
     setContent(data.content ?? "");
     console.log("Result", result);

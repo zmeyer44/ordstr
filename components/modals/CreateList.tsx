@@ -10,6 +10,7 @@ import { useModal } from "@/app/_providers/modalContext/provider";
 import { toast } from "react-hot-toast";
 import { randomId } from "@/lib/nostr";
 import { useNDK } from "@/app/_providers/ndkProvider";
+import { useLists } from "@/app/_providers/listProvider";
 const CreateListSchema = z.object({
   name: z.string(),
   picture: z.string().optional(),
@@ -20,6 +21,7 @@ type CreateListType = z.infer<typeof CreateListSchema>;
 
 export default function CreateList() {
   const modal = useModal();
+  const { getLists } = useLists()!;
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const { currentUser, updateUser } = useCurrentUser();
@@ -37,6 +39,7 @@ export default function CreateList() {
 
   onDone(() => {
     console.log("Done!");
+    getLists(currentUser!.pubkey);
     setIsLoading(false);
     toast.success("List Created!");
     modal?.hide();
