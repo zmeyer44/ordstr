@@ -18,9 +18,14 @@ import {
   RiNotification3Fill,
   RiLoginCircleLine,
   RiLoginCircleFill,
+  RiMenu4Fill,
+  RiMenuAddLine,
+  RiFileList3Line,
 } from "react-icons/ri";
+import { PiScrollLight } from "react-icons/pi";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import CreateEventModal from "@/components/modals/CreateEvent";
+import CreateListModal from "@/components/modals/CreateList";
 import FormModal from "@/components/modals/FormModal";
 export default function BottomNav() {
   const pathname = usePathname();
@@ -108,13 +113,13 @@ export default function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-header- sm:hidden">
       <div className="flex justify-end px-10 pb-6">
         <div
+          ref={newContentBtnRef}
           className={cn(
             `relative flex h-12 cursor-pointer flex-row-reverse items-center rounded-full border-2 bg-background-gray transition-all`,
             menuOpen ? "w-full" : "center w-12",
           )}
         >
           <div
-            ref={newContentBtnRef}
             onClick={() => {
               modal?.show(<CreateEventModal />);
               setMenuOpen(false);
@@ -130,6 +135,25 @@ export default function BottomNav() {
               className={cn(
                 "pointer-events-none h-7 w-7 transition-transform",
                 menuOpen ? "rotate-180" : "rotate-0",
+              )}
+            />
+          </div>
+          <div
+            onClick={() => {
+              modal?.show(<CreateListModal />);
+              setMenuOpen(false);
+            }}
+            className={cn(
+              "center absolute -z-10 cursor-pointer rounded-full bg-background shadow-md transition-all",
+              menuOpen
+                ? "bottom-[125px] right-0 h-12 w-12"
+                : "bottom-4 right-3 h-4 w-4",
+            )}
+          >
+            <PiScrollLight
+              className={cn(
+                menuOpen ? "rotate-270" : "rotate-0",
+                " pointer-events-none h-7 w-7 text-primary-foreground transition-transform ",
               )}
             />
           </div>
@@ -215,7 +239,7 @@ export default function BottomNav() {
             className={cn(menuOpen ? "hidden" : "absolute inset-0")}
             onClick={() => setMenuOpen(true)}
           />
-          <RxPlus
+          <RiMenu4Fill
             className={cn(
               "pointer-events-none absolute h-6 w-6 text-primary-foreground transition-transform",
               menuOpen ? "hidden rotate-0" : "rotate-180",
