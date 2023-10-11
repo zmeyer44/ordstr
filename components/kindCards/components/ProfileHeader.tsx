@@ -28,24 +28,31 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
     <div className="flex items-center justify-between @container">
       <div className="flex flex-1 items-center gap-x-2 pr-3">
         <Avatar className="h-[25px] w-[25px] border bg-accent/60">
-          <AvatarImage className="bg-transparent" src={user?.picture} />
+          <AvatarImage
+            className="bg-transparent"
+            src={user?.profile?.image ?? user?.profile?.picture}
+          />
           <AvatarFallback className="bg-transparent text-[11px] uppercase leading-5">
-            {user?.display_name?.at(0) ?? user?.name?.at(0) ?? npub.at(5)}
+            {user?.profile?.displayName?.at(0) ??
+              user?.profile?.name?.at(0) ??
+              npub.at(5)}
           </AvatarFallback>
         </Avatar>
         <Link href={`/${npub}`} className="flex items-center hover:underline">
           <CardTitle className="line-clamp-1 break-all font-normal leading-normal tracking-normal text-primary-foreground/80">
-            {user?.display_name ?? user?.name ?? truncateText(npub)}
+            {user?.profile?.displayName ??
+              user?.profile?.name ??
+              truncateText(npub)}
           </CardTitle>
-          {!!user?.nip05 && (
+          {!!user?.profile?.nip05 && (
             <div className="center ml-1.5 gap-x-1">
               <span className="text-xs font-light text-accent @lg:text-sm">
-                {user.nip05}
+                {user.profile.nip05}
               </span>
               {showFaviconImage && (
                 <Image
-                  alt={user.nip05.split("@").at(-1) as string}
-                  src={`https://www.google.com/s2/favicons?domain=${user.nip05
+                  alt={user.profile.nip05.split("@").at(-1) as string}
+                  src={`https://www.google.com/s2/favicons?domain=${user.profile.nip05
                     .split("@")
                     .at(-1)}&size=128`}
                   height={16}

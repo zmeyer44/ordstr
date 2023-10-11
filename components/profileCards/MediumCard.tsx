@@ -9,10 +9,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "@/types";
 import { RenderText } from "../textRendering";
 import { nip19 } from "nostr-tools";
+import { type NDKUser } from "@nostr-dev-kit/ndk";
 
 type MediumCardProps = {
   pubkey: string;
-  user?: User;
+  user?: NDKUser;
   actions?: { element: () => JSX.Element }[];
 };
 
@@ -31,7 +32,10 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
       <div className="relative max-h-[150px] overflow-hidden">
         <div className="relative bg-background pb-[80px] @md:pb-[20%]">
           <div className="absolute inset-0 max-h-[150px] bg-accent/40">
-            <img src={user?.banner} className="h-full w-full object-cover" />
+            <img
+              src={user?.profile?.banner}
+              className="h-full w-full object-cover"
+            />
           </div>
         </div>
       </div>
@@ -42,11 +46,14 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
           <div className="mb-[1px] ml-[10px] mt-[-40px] @sm:ml-[16px] @sm:mt-[-40px] @md:ml-[24px] @md:mt-[-47px] @lg:mt-[-50px] @2xl:mt-[-65px]">
             <div className="relative aspect-square w-[70px] overflow-hidden rounded-full bg-background @sm:w-[75px] @md:w-[90px] @lg:w-[100px] @2xl:w-[120px]">
               <Avatar className="h-full w-full border-2 bg-accent/60">
-                <AvatarImage className="bg-transparent" src={user?.picture} />
+                <AvatarImage
+                  className="bg-transparent"
+                  src={user?.profile?.image ?? user?.profile?.picture}
+                />
                 <AvatarFallback className="bg-transparent text-[24px] uppercase leading-5 @md:text-[32px]">
-                  {user?.display_name
-                    ? user.display_name.at(0)
-                    : user?.name?.at(0) ?? npub.at(0)}
+                  {user?.profile?.displayName
+                    ? user.profile?.displayName.at(0)
+                    : user?.profile?.name?.at(0) ?? npub.at(0)}
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -74,18 +81,20 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
           <div className="@lg:space-y-1.5">
             <div className="flex items-end gap-x-3 truncate">
               <h1 className="text-lg font-semibold @md:text-xl  @lg:text-2xl">
-                {user?.display_name ?? user?.name ?? truncateText(npub)}
+                {user?.profile?.displayName ??
+                  user?.profile?.name ??
+                  truncateText(npub)}
               </h1>
 
-              {!!user?.nip05 && (
+              {!!user?.profile?.nip05 && (
                 <div className="center gap-x-2">
                   <span className="mb-1 truncate text-sm font-light text-accent @lg:text-[16px]">
-                    {user.nip05}
+                    {user.profile.nip05}
                   </span>
                   {showFaviconImage && (
                     <Image
-                      alt={user.nip05.split("@").at(-1) as string}
-                      src={`https://www.google.com/s2/favicons?domain=${user.nip05
+                      alt={user.profile.nip05.split("@").at(-1) as string}
+                      src={`https://www.google.com/s2/favicons?domain=${user.profile.nip05}
                         .split("@")
                         .at(-1)}&size=128`}
                       height={16}
@@ -99,7 +108,7 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
             </div>
             <div className="">
               <button
-                className="flex items-center text-xs font-light transition-colors hover:text-accent @sm:text-sm @lg:text-[16px]"
+                className="flex items-center text-xs font-light transition-colors @sm:text-sm @lg:text-[16px] hover:text-accent"
                 onClick={() => {
                   void copyText(npub);
                   toast.success(`Copied npub`);
@@ -116,7 +125,7 @@ export default function MediumCard({ pubkey, user, actions }: MediumCardProps) {
           {/* About */}
           <div className="max-w-lg @lg:max-w-3xl">
             <p className="text-text-strong text-[14px] font-light @lg:text-[15px]">
-              <RenderText text={user?.about ?? ""} />
+              <RenderText text={user?.profile?.about ?? ""} />
             </p>
           </div>
         </div>

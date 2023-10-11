@@ -32,7 +32,9 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
     <Card className="bg-background">
       <CardHeader className="flex h-[43px] flex-row items-center justify-between space-y-0 py-2">
         <CardTitle>{`${
-          user?.display_name ?? user?.name ?? truncateText(npub)
+          user?.profile?.displayName ??
+          user?.profile?.name ??
+          truncateText(npub)
         }'s Lists`}</CardTitle>
         {currentUser?.hexpubkey === pubkey && (
           <button
