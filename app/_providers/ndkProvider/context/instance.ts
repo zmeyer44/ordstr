@@ -31,6 +31,10 @@ export default function NDKInstance(explicitRelayUrls: string[]) {
     signer?: NDKPrivateKeySigner | NDKNip46Signer | NDKNip07Signer,
   ) {
     const ndkInstance = new NDK({ explicitRelayUrls, signer });
+    if (process.env.NODE_ENV === "development") {
+      ndkInstance.pool.on("connect", () => console.log("✅ connected"));
+      ndkInstance.pool.on("disconnect", () => console.log("❌ disconnected"));
+    }
 
     if (signer) {
       _setSigner(signer);

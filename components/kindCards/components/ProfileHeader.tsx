@@ -9,7 +9,6 @@ import { truncateText } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { nip19 } from "nostr-tools";
-import { useNDK } from "@/app/_providers/ndkProvider";
 
 type ProfileHeaderProps = {
   pubkey: string;
@@ -25,8 +24,8 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
   const npub = nip19.npubEncode(pubkey);
   const [showFaviconImage, setShowFaviconImage] = useState(true);
   return (
-    <div className="flex items-center justify-between @container">
-      <div className="flex flex-1 items-center gap-x-2 pr-3">
+    <div className="flex items-center justify-between overflow-x-hidden @container">
+      <div className="flex flex-1 shrink items-center gap-x-2 overflow-x-hidden pr-3">
         <Avatar className="h-[25px] w-[25px] border bg-accent/60">
           <AvatarImage
             className="bg-transparent"
@@ -36,13 +35,13 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
             {profile?.displayName?.at(0) ?? profile?.name?.at(0) ?? npub.at(5)}
           </AvatarFallback>
         </Avatar>
-        <Link href={`/${npub}`} className="flex items-center hover:underline">
-          <CardTitle className="line-clamp-1 break-all font-normal leading-normal tracking-normal text-primary-foreground/80">
+        <Link href={`/${npub}`} className="flex items-center  hover:underline">
+          <CardTitle className="truncate font-normal leading-normal tracking-normal text-primary-foreground/80">
             {profile?.displayName ?? profile?.name ?? truncateText(npub)}
           </CardTitle>
           {!!profile?.nip05 && (
             <div className="center ml-1.5 gap-x-1">
-              <span className="text-xs font-light text-accent @lg:text-sm">
+              <span className="truncate text-xs font-light text-accent @lg:text-sm">
                 {profile.nip05}
               </span>
               {showFaviconImage && (
@@ -61,7 +60,7 @@ export default function ProfileHeader({ pubkey, actions }: ProfileHeaderProps) {
           )}
         </Link>
       </div>
-      <div className="shrink-0">
+      <div className="shrink-0 pl-2">
         <MenuButton align="end" options={actions}>
           <button className="center text-primary-foreground hover:text-accent">
             <RxDotsHorizontal className="h-5 w-5" />

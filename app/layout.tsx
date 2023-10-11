@@ -53,7 +53,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="">
-      <body className={cn(inter.className, "w-full bg-background")}>
+      <body
+        className={cn(inter.className, "w-full bg-background scrollbar-thin")}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
