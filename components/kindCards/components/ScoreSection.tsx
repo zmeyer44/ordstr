@@ -35,7 +35,7 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
     const downVotes = reactionEvents.length - upvotes;
     const score = upvotes - downVotes;
     const userAction = reactionEvents.filter(
-      (event) => event.pubkey === currentUser?.pubkey,
+      (event) => event.pubkey === currentUser?.hexpubkey,
     )?.[0];
 
     return { score, userAction };

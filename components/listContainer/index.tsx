@@ -34,7 +34,7 @@ export default function ListContainer({ pubkey }: ListContainerProps) {
         <CardTitle>{`${
           user?.display_name ?? user?.name ?? truncateText(npub)
         }'s Lists`}</CardTitle>
-        {currentUser?.pubkey === pubkey && (
+        {currentUser?.hexpubkey === pubkey && (
           <button
             onClick={() => modal?.show(<CreateList />)}
             className="center  -mr-2 h-[30px] w-[30px] rounded-full hover:bg-accent/20"

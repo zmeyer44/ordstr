@@ -11,6 +11,7 @@ import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { nip19 } from "nostr-tools";
 import { UserSchema } from "@/types";
 import { useNDK } from "../ndkProvider";
+import { NDKUser } from "@nostr-dev-kit/ndk";
 
 type KeysContextProps = {
   setKeys: (keys: { privkey: string | null; pubkey: string | null }) => void;
@@ -43,8 +44,6 @@ export default function KeysProvider({ children }: { children: ReactElement }) {
         if (!user) {
           throw new Error("NO auth");
         }
-        console.log("Setting keys", user);
-
         setKeys({
           privkey: "",
           pubkey: nip19.decode(user.npub).data.toString(),
@@ -58,24 +57,38 @@ export default function KeysProvider({ children }: { children: ReactElement }) {
   }, []);
 
   useEffect(() => {
-    if (keys.pubkey) {
+    if (keys.pubkey && ndk && !currentUser) {
       handleFetchMetadata(keys.pubkey);
       // setCurrentUser(user)
     }
-  }, [keys.pubkey]);
+  }, [keys.pubkey, ndk, currentUser]);
 
+  const test = true;
   async function handleFetchMetadata(pubkey: string) {
-    const metadataEvent = await ndk?.fetchEvent({
-      authors: [pubkey],
-      kinds: [0],
-    });
-    if (!metadataEvent) return;
-    const parsedUserData = UserSchema.safeParse({
-      ...JSON.parse(metadataEvent.content),
-      npub: nip19.npubEncode(pubkey),
-    });
-    if (parsedUserData.success) {
-      setCurrentUser({ ...parsedUserData.data, pubkey });
+    try {
+      if (test && ndk) {
+        console.log("Fetching profile", ndk);
+        const user = ndk?.getUser({ hexpubkey: pubkey });
+        console.log("user", user);
+        const profileData = await user.fetchProfile();
+        console.log("PRofile", profileData);
+        setCurrentUser(user);
+      } else {
+        // const metadataEvent = await ndk?.fetchEvent({
+        //   authors: [pubkey],
+        //   kinds: [0],
+        // });
+        // if (!metadataEvent) return;
+        // const parsedUserData = UserSchema.safeParse({
+        //   ...JSON.parse(metadataEvent.content),
+        //   npub: nip19.npubEncode(pubkey),
+        // });
+        // if (parsedUserData.success) {
+        //   setCurrentUser(parsedUserData.data);
+        // }
+      }
+    } catch (e) {
+      console.log("handleFetchMetadata", e);
     }
   }
 

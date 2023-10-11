@@ -27,7 +27,7 @@ export default function CreateList() {
   const { onDone } = useEvents({
     filter: {
       kinds: [1],
-      authors: [currentUser?.pubkey as string],
+      authors: [currentUser?.hexpubkey as string],
       since: unixTimeNowInSeconds(),
       limit: 1,
     },

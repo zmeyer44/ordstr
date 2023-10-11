@@ -1,14 +1,15 @@
 import { create } from "zustand";
 import { type User } from "@/types";
+import { NDKUser } from "@nostr-dev-kit/ndk";
 
 type Settings = {};
 
 interface CurrentUserState {
-  currentUser: (User & { pubkey: string }) | null;
+  currentUser: NDKUser | null;
   follows: string[];
   settings: Settings;
-  setCurrentUser: (user: (User & { pubkey: string }) | null) => void;
-  updateUser: (user: Partial<User>) => void;
+  setCurrentUser: (user: NDKUser | null) => void;
+  updateCurrentUser: (user: Partial<NDKUser>) => void;
   setFollows: (follows: string[]) => void;
 }
 
@@ -16,12 +17,12 @@ const currentUserStore = create<CurrentUserState>()((set) => ({
   currentUser: null,
   follows: [],
   settings: {},
-  updateUser: (user) =>
+  setCurrentUser: (user) => set((state) => ({ ...state, currentUser: user })),
+  updateCurrentUser: (user) =>
     set((state) => ({
       ...state,
-      currentUser: { ...state.currentUser!, ...user },
+      currentUser: { ...state.currentUser, ...user } as NDKUser,
     })),
-  setCurrentUser: (user) => set((state) => ({ ...state, currentUser: user })),
   setFollows: (follows) => set((state) => ({ ...state, follows: follows })),
 }));
 

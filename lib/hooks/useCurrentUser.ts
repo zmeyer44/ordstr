@@ -4,8 +4,13 @@ import useEvents from "@/lib/hooks/useEvents";
 import { UserSchema } from "@/types";
 
 export default function useCurrentUser() {
-  const { currentUser, setCurrentUser, updateUser, setFollows, follows } =
-    currentUserStore();
+  const {
+    currentUser,
+    setCurrentUser,
+    setFollows,
+    updateCurrentUser,
+    follows,
+  } = currentUserStore();
 
   const {
     events: contactList,
@@ -14,7 +19,7 @@ export default function useCurrentUser() {
   } = useEvents({
     filter: {
       kinds: [3],
-      authors: [currentUser?.pubkey ?? ""],
+      authors: [currentUser?.hexpubkey ?? ""],
       limit: 1,
     },
     enabled: !!currentUser,
@@ -41,7 +46,12 @@ export default function useCurrentUser() {
       ...JSON.parse(userInfo),
     });
     if (parsedData.success) {
-      updateUser(parsedData.data);
+      updateCurrentUser({
+        profile: {
+          ...parsedData.data,
+          displayName: parsedData.data.display_name,
+        },
+      });
     }
   }
 

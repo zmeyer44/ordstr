@@ -20,7 +20,7 @@ interface NDKContext {
   fetchEvents: (filter: NDKFilter) => Promise<NDKEvent[]>;
   loginWithNip46: (
     npub: string,
-    sk?: string
+    sk?: string,
   ) => Promise<
     | undefined
     | {
@@ -44,6 +44,7 @@ interface NDKContext {
     | {
         npub: string;
         signer: NDKNip07Signer;
+        user: NDKUser;
       }
   >;
   signPublishEvent: (
@@ -53,7 +54,7 @@ interface NDKContext {
           repost: boolean;
           publish: boolean;
         }
-      | undefined
+      | undefined,
   ) => Promise<undefined | NDKEvent>;
   getUser: (_: string) => NDKUser;
   getProfile: (_: string) => NDKUserProfile;

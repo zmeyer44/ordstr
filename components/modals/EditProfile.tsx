@@ -33,7 +33,7 @@ export default function EditProfile({ user }: EditProfileModalProps) {
   const { onDone } = useEvents({
     filter: {
       kinds: [0],
-      authors: [currentUser?.pubkey as string],
+      authors: [currentUser?.hexpubkey as string],
       since: unixTimeNowInSeconds(),
       limit: 1,
     },

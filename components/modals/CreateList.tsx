@@ -29,7 +29,7 @@ export default function CreateList() {
   const { onDone } = useEvents({
     filter: {
       kinds: [30001],
-      authors: [currentUser?.pubkey as string],
+      authors: [currentUser?.hexpubkey as string],
       since: unixTimeNowInSeconds(),
       limit: 1,
       ["#d"]: [id as string],
@@ -39,7 +39,7 @@ export default function CreateList() {
 
   onDone(() => {
     console.log("Done!");
-    getLists(currentUser!.pubkey);
+    getLists(currentUser!.hexpubkey);
     setIsLoading(false);
     toast.success("List Created!");
     modal?.hide();

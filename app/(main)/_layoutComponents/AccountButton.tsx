@@ -31,18 +31,18 @@ export default function AccountButton() {
       >
         <button className="flex h-full items-center gap-x-2 pl-3 hover:bg-primary/40 md:gap-x-4 md:pl-4">
           <h2 className="font-semibold text-primary-foreground">
-            {currentUser.display_name ??
-              currentUser.name ??
+            {currentUser.profile?.displayName ??
+              currentUser.profile?.name ??
               truncateText(currentUser.npub)}
           </h2>
           <Avatar className="mb-[1px] mr-[9px] h-[35px] w-[35px] border bg-accent/60 md:mr-[14px]">
             <AvatarImage
               className="bg-transparent"
-              src={currentUser?.picture}
+              src={currentUser.profile?.picture}
             />
             <AvatarFallback className="bg-transparent text-[14px] uppercase leading-5">
-              {currentUser.display_name?.at(0) ??
-                currentUser.name?.at(0) ??
+              {currentUser.profile?.display_name?.at(0) ??
+                currentUser.profile?.name?.at(0) ??
                 currentUser.npub.at(5)}
             </AvatarFallback>
           </Avatar>
