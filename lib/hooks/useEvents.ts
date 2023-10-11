@@ -34,21 +34,25 @@ export default function useEvents({
   const { ndk } = useNDK();
 
   useEffect(() => {
-    if (!enabled) return;
+    console.log("EFFECT");
+    if (!enabled || !ndk) return;
     void init();
     return () => {
-      console.log("STOPPING");
+      console.log("STOPPING", sub);
       if (sub) {
         sub.stop();
       }
     };
-  }, [filter, enabled]);
+  }, [enabled, ndk]);
 
   async function init() {
     console.log("Running init");
     setIsLoading(true);
     try {
-      const sub = ndk!.subscribe(filter, { closeOnEose: false });
+      const sub = ndk!.subscribe(
+        { limit: 50, ...filter },
+        { closeOnEose: false },
+      );
       setSub(sub);
       onSubscribeCallback?.(sub);
       sub.on("event", (e, r) => {
@@ -57,7 +61,7 @@ export default function useEvents({
         }
         if (eventFilter(e)) {
           setEvents((prevEvents) => {
-            const events = [...prevEvents, e];
+            const events = uniqBy((a) => a.id, [...prevEvents, e]);
             return events.sort((a, b) => b.created_at - a.created_at);
           });
           setEventIds((prev) => prev.add(e.id));
