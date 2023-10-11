@@ -50,6 +50,13 @@ export default function ScoreSection({ id, pubkey }: ScoreSectionProps) {
     if (score.userAction !== undefined) {
       // Delete previous vote
       await deleteEvent(ndk!, [["e", score.userAction.id]]);
+      if (
+        (score.userAction.content !== "-" && voteType === "+") ||
+        (score.userAction.content === "-" && voteType === "-")
+      ) {
+        // Just undo
+        return;
+      }
     }
     await createReaction(ndk!, voteType, {
       id: id,
