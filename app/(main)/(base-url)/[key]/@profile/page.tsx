@@ -62,7 +62,7 @@ export default function ProfilePage({ params: { key } }: ProfilePageProps) {
             }}
           />
         </div>
-        <div className="sticky top-0 hidden h-[100svh] min-w-[270px] flex-1 shrink-0 sm:block">
+        <div className="sticky top-[0px] hidden h-[100svh] min-w-[270px] flex-1 shrink-0 sm:block">
           <div className="sticky top-[128px]">
             <ListContainer pubkey={pubkey} />
           </div>
