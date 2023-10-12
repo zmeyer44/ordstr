@@ -129,3 +129,113 @@ const resultJson = {
   id: "86a20d0a9b3d2b70998d70a4efd43cc15a9ed22ad1c5df1c25d99eaee5ec7bc9",
   sig: "b557bfc40e07181e0e8f96c6f2d7adfa4f0e41d961654c1a0b1dff6c66d2bbea27bc64174754a53f07873db64bd2a41e4e649c06be5e77adccecabd31decf127",
 };
+
+const privateNote = {
+  created_at: 1697082331,
+  content:
+    "VcGm3avXzPgTU1YJMhs4IcC1ety4OjiNIuI79ckZA24=?iv=atLaMX8fl0Y3PkyD6BS05g==",
+  tags: [
+    ["title", "hEpvEc7mSb1cFr8y/FMKcg==?iv=XPCxZNvIo3mgdOy0ucM/nQ=="],
+    ["d", "qmhqy9bzhirbqavh"],
+  ],
+  kind: 31023,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "715915a933af0950c7240fd7494dbed89b6f5841e1362c9da49d999ff46d9c4a",
+};
+
+const privateNoteOnList = {
+  created_at: 1697082694,
+  content:
+    "Rt9dd49nsFSgpzfeUAcD407sT1Zp1Dpq2qgIRSWk+go=?iv=acFP0qtYkuLJfjxDz/jTeg==",
+  tags: [
+    ["client", "highlighter"],
+    ["p", "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58"],
+  ],
+  kind: 4,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "75ff929010dbb0cc48b850dd6c588b1e9d6615cc1938248865308e3d7bd3edbd",
+};
+
+const updatedList = {
+  created_at: 1697082703,
+  content:
+    "eA5hdxvjnJ4r+ifDgSefTltAzPgsGjtIKBalqbj2z3MeINfMUraLKD7DvPb8wYMlG8KbutgoWoIEt8NsRXChZLOFYxCYTb4yDFnCl5c8gxQ=?iv=hi+Fsz/nEfAUH4HtaWMKog==",
+  tags: [
+    ["name", "Ordstr Ideas"],
+    ["title", "Ordstr Ideas 🤔"],
+    ["d", "bfcc675b"],
+    ["description", "List of ideas for ordstr. Feel free to take a look!"],
+    ["e", "943294498932f0812e1e00ceee47f9e0cb1b50c2d33a65b47bc24a8c1c92f82d"],
+    ["e", "bb659f2cc79b5b1a546ab8018613fabcbc693e03e4983628c92d866e3cf62497"],
+    ["e", "581201d28836da40189f2563894234f919e3ae3cb1b72c94e4402ebe1d85ec18"],
+    ["picture", ""],
+  ],
+  kind: 30001,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "ae93f01217c9a5ca2bb3ce07f22f815d8a91092ca7ab9cc8d1c7e90768d76737",
+  sig: "d2615a9990fced499cb01449ee4a139a4a1ca4fc6bc7ab57f16e12c37bd3aec117d0e5ac25d4510682eccf9579c9fcdcb561085c507018dbed8a65211a0a1611",
+};
+
+const highlightComment = {
+  created_at: 1697084447,
+  content: "Cool",
+  tags: [
+    [
+      "e",
+      "84a167d45c086dc9c368621502b35fcf68cd0957be0dadf632e254547c51e729",
+      "reply",
+    ],
+  ],
+  kind: 1,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "bc4223236f10017122f22ba4898305d9e4982b8d2341e30b58482067981d835b",
+};
+const addToShelf = {
+  created_at: 1697084700,
+  content: "",
+  tags: [
+    ["name", "Test shelf"],
+    ["description", "Here is my test shelf"],
+    [
+      "a",
+      "30023:a012dc823bcf80d5eadf4b6683035634bc40f1b0a52b958278b6bbc96458a70d:m4aufDd4Cf2pp7gjUiAyE",
+    ],
+    ["d", "7fm18dogmy1zanx1"],
+  ],
+  kind: 39802,
+  pubkey: "17717ad4d20e2a425cda0a2195624a0a4a73c4f6975f16b1593fc87fa46f2d58",
+  id: "7e1f2cfda0dcfc7322f42278f6590ca7f32fac070ed5cac6cd105faa53f493ac",
+};
+
+const highlight = {
+  created_at: 1691526821,
+  content:
+    "nostr:note1e6qu694vq8xnlwwmdpcvcr6j46ym88m9934lf83ashgmhshl5xss5ducta\nHow come capital will not be required if Bitcoin miners will be paid on the sidechain and will have to forego fees on the mainchain? It's the same.",
+  tags: [
+    [
+      "q",
+      "ce81cd16ac01cd3fb9db6870cc0f52ae89b39f652c6bf49e3d85d1bbc2ffa1a1",
+      "quote",
+    ],
+    ["k", "9802"],
+    ["e", "ce81cd16ac01cd3fb9db6870cc0f52ae89b39f652c6bf49e3d85d1bbc2ffa1a1"],
+  ],
+  kind: 1,
+  pubkey: "3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d",
+  id: "2ea60a8b8f1a4978386f49a4bc859d0723e545c956faf2baf97a7dc3d0a788e6",
+  sig: "27d78341667b850454aa9b5647388b700dadb5b7fa43ac32e4f166b52c2964d2d74ad6e2035a8bfa4ca2a3b7845f30184673086f37106a58309615f9583e9061",
+};
+const kind9802 = {
+  created_at: 1697057228,
+  content:
+    "As part of a first PoC, Project Atlas is focusing on bitcoin flows between crypto exchanges across geographical locations.3",
+  tags: [
+    ["r", "https://highlighter.com/global/newest"],
+    ["t", "BIS"],
+    ["t", "chainalysis"],
+  ],
+  kind: 9802,
+  pubkey: "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52",
+  id: "d1a21844fc21143331be59ab7a86d28ba8dfae74bf0eeada6f63c44e87be906c",
+  sig: "3b19b4bd5082ebb683170d6d95495163e3b69d657858603dbc66aa9ae1802c533e3bc3bc0159200d077217e97d2ed9e7822762e7ac6eb51234dfc70852c76f62",
+};

@@ -4,6 +4,7 @@ import Hex from "crypto-js/enc-hex";
 import { getTagValues } from "./utils";
 import { sha256 as SHA256 } from "@noble/hashes/sha256";
 import { bytesToHex } from "@noble/hashes/utils";
+import crypto from "crypto";
 
 export enum Kind {
   Metadata = 0,
@@ -121,4 +122,52 @@ export namespace NostrService {
     });
     return filteredEvents;
   }
+}
+
+export function encryptMessage(message: string, password: string) {
+  try {
+    const buffer = create32ByteBuffer(password);
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv("aes-256-cbc", buffer, iv);
+
+    const encrypted = Buffer.concat([
+      cipher.update(message, "utf-8"),
+      cipher.final(),
+    ]);
+
+    return encrypted.toString("base64") + "?iv=" + iv.toString("base64");
+  } catch (e) {
+    console.error(e);
+  }
+}
+// Function to decrypt a hashed message using a passphrase
+export function decryptMessage(encryptedMessage: string, password: string) {
+  try {
+    const buffer = create32ByteBuffer(password);
+    // Extract IV from the received message
+    const ivBase64 = encryptedMessage.split("?iv=")[1];
+    if (!ivBase64) {
+      return;
+    }
+
+    const iv = Buffer.from(ivBase64, "base64");
+
+    const encryptedText = Buffer.from(encryptedMessage, "base64");
+
+    const decipher = crypto.createDecipheriv("aes-256-cbc", buffer, iv);
+
+    const decrypted = decipher.update(encryptedText);
+    return Buffer.concat([decrypted, decipher.final()]).toString();
+  } catch (e) {
+    console.error(e);
+  }
+}
+function create32ByteBuffer(inputString: string) {
+  const hash = crypto.createHash("sha256").update(inputString).digest("hex");
+  const buffer = Buffer.from(hash, "hex");
+  return buffer;
+}
+
+export function generateRandomString() {
+  return crypto.randomBytes(32).toString("hex");
 }

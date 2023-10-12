@@ -15,7 +15,6 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/app/_providers/modalContext/provider";
 import { cn } from "@/lib/utils";
 import Template from "./Template";
-
 import {
   Form,
   FormControl,
@@ -35,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 type FieldOptions =
   | "toggle"
@@ -111,7 +111,12 @@ export default function FormModal<TSchema extends FieldValues>({
                 control={form.control}
                 name={slug as Path<TSchema>}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem
+                    className={cn(
+                      type === "toggle" &&
+                        "flex items-center gap-x-3 space-y-0",
+                    )}
+                  >
                     <FormLabel>{label}</FormLabel>
                     {type === "input" ? (
                       <FormControl>
@@ -143,6 +148,13 @@ export default function FormModal<TSchema extends FieldValues>({
                           ))}
                         </SelectContent>
                       </Select>
+                    ) : type === "toggle" ? (
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     ) : (
                       <FormControl>
                         <Input placeholder={placeholder} {...field} />

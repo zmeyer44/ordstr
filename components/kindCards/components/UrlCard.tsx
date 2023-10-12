@@ -68,7 +68,10 @@ export default function UrlCard({
             </div>
           )}
           <CardHeader
-            className={cn("border-0", metadata.image && "border-t-2")}
+            className={cn(
+              "border-0",
+              metadata.image ? "border-t-2" : "border-t-0",
+            )}
           >
             <CardTitle className="line-clamp-2 text-[14px] font-medium leading-4">
               {metadata.title}

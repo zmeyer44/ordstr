@@ -137,3 +137,6 @@ export function validateUrl(value: string) {
     value,
   );
 }
+export function btcToSats(amount: number) {
+  return parseInt((amount * 100_000_000).toFixed());
+}

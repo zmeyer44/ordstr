@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parse } from "node-html-parser";
 import { z } from "zod";
-
+import { validateUrl } from "@/lib/utils";
 type MetaData = {
   title: string;
   description: string;
@@ -58,6 +58,9 @@ async function handler(req: NextRequest) {
       if (!name || !content) continue;
       for (const key of keys) {
         if (name.includes(key)) {
+          if (key === "image" && !validateUrl(content)) {
+            continue;
+          }
           const current = metadata[key];
           if (!current || content.length > current.length) {
             metadata[key] = content;

@@ -27,7 +27,16 @@ const UserSchema = z.object({
   lud16: z.string().optional(),
   nip05: z.string().optional(),
 });
+const EventSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  pubkey: z.string(),
+  tags: z.string().array().array(),
+  kind: z.number(),
+  created_at: z.number(),
+  sig: z.string(),
+});
 
-export { UserSchema };
+export { UserSchema, EventSchema };
 
 export type { User };

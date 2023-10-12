@@ -18,6 +18,7 @@ const EditProfileSchema = z.object({
   about: z.string().optional(),
   website: z.string().optional(),
   nip05: z.string().optional(),
+  lud16: z.string().optional(),
 });
 
 type EditProfileType = z.infer<typeof EditProfileSchema>;
@@ -101,8 +102,13 @@ export default function EditProfile({ profile }: EditProfileModalProps) {
           slug: "nip05",
           placeholder: "name@example.com",
         },
+        {
+          label: "Bitcoin lightning address (lud16)",
+          type: "input",
+          slug: "lud16",
+        },
       ]}
-      defaultValues={profile ?? {}}
+      defaultValues={{ ...profile, display_name: profile?.displayName } ?? {}}
       formSchema={EditProfileSchema}
       onSubmit={handleSubmit}
       isSubmitting={isLoading}

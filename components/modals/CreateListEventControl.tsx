@@ -42,7 +42,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import { useNDK } from "@/app/_providers/ndkProvider";
-import { createEvent, createEventOnList } from "@/lib/actions/create";
+import {
+  createEventOnList,
+  createEncryptedEventOnPrivateList,
+} from "@/lib/actions/create";
 import { NDKEvent, NDKList } from "@nostr-dev-kit/ndk";
 import { NostrEvent } from "@nostr-dev-kit/ndk";
 import {
@@ -53,6 +56,7 @@ import { getTagValues } from "@/lib/nostr/utils";
 import { saveEphemeralSigner } from "@/lib/actions/ephemeral";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { fetchMetadata } from "@/lib/fetchers/metadata";
+import UrlCard from "../kindCards/components/UrlCard";
 
 const metadataSchema = z.object({
   title: z.string(),
@@ -116,9 +120,7 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   const [content, setContent] = useState<string | null>(null);
   const { ndk, signer } = useNDK();
   const { currentUser } = useCurrentUser();
-  const listTitle =
-    getTagValues("title", listEvent.tags) ??
-    getTagValues("name", listEvent.tags);
+  const isPrivate = getTagValues("private", listEvent.tags);
   const { getSigner } = useSigner()!;
 
   async function onSubmit(data: CreateListEventType) {
@@ -131,15 +133,15 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
         }
       });
     }
-
-    if (data.sender === "delegate" && !delegateSigner?.saved) {
-      // Ephemeral key must be saved
+    if (isPrivate) {
+      console.log("Creating private event");
       if (!delegateSigner?.signer) {
         toast.error("No signer created");
         return;
       }
-      try {
-        console.log("Delegate signer", delegateSigner);
+      console.log("Delegate signer", delegateSigner);
+      if (!delegateSigner?.saved) {
+        console.log("Saving delegate...");
         await saveEphemeralSigner(ndk!, delegateSigner.signer, {
           associatedEvent: new NDKEvent(ndk, listEvent),
           keyProfile: {
@@ -149,27 +151,63 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
             lud16: currentUser?.profile?.lud16,
           },
         });
-        console.log("Ephemeral signer created!");
-      } catch (e) {
-        console.error(e);
-        throw e;
       }
-    }
-    const result = await createEventOnList(
-      ndk!,
-      {
-        content: data.content ?? "",
-        kind: 1,
-        tags: tags,
-      },
-      new NDKList(ndk, listEvent),
-      data.sender === "delegate" ? delegateSigner?.signer : undefined,
-    );
-    setContent(data.content ?? "");
-    console.log("Result", result);
-    if (result) {
-      toast.success("Note added!");
-      modal?.hide();
+      const result = await createEncryptedEventOnPrivateList(
+        ndk!,
+        {
+          content: data.content ?? "",
+          kind: 1,
+          tags: tags,
+        },
+        new NDKList(ndk, listEvent),
+        delegateSigner.signer,
+      );
+
+      console.log("Result", result);
+      if (result) {
+        toast.success("Private Note added!");
+        modal?.hide();
+        return;
+      }
+    } else {
+      if (data.sender === "delegate" && !delegateSigner?.saved) {
+        // Ephemeral key must be saved
+        if (!delegateSigner?.signer) {
+          toast.error("No signer created");
+          return;
+        }
+        try {
+          console.log("Delegate signer", delegateSigner);
+          await saveEphemeralSigner(ndk!, delegateSigner.signer, {
+            associatedEvent: new NDKEvent(ndk, listEvent),
+            keyProfile: {
+              name: delegateSigner.title,
+              picture: currentUser?.profile?.image,
+              lud06: currentUser?.profile?.lud06,
+              lud16: currentUser?.profile?.lud16,
+            },
+          });
+          console.log("Ephemeral signer created!");
+        } catch (e) {
+          console.error(e);
+          throw e;
+        }
+      }
+      const result = await createEventOnList(
+        ndk!,
+        {
+          content: data.content ?? "",
+          kind: 1,
+          tags: tags,
+        },
+        new NDKList(ndk, listEvent),
+        data.sender === "delegate" ? delegateSigner?.signer : undefined,
+      );
+      console.log("Result", result);
+      if (result) {
+        toast.success("Note added!");
+        modal?.hide();
+      }
     }
   }
 
@@ -180,7 +218,7 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
       sender: "self",
     },
   });
-  const { watch } = form;
+  const { watch, setValue } = form;
   const link = watch("link");
   const sender = watch("sender");
   const debouncedLink = useDebounce<string>(link, 300);
@@ -194,6 +232,15 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
     }
   }, [sender]);
   useEffect(() => {
+    if (isPrivate && !delegateSigner) {
+      setFetchingSigner(true);
+      void getSigner(new NDKList(ndk, listEvent))
+        .then((r) => setDelegateSigner(r))
+        .finally(() => setFetchingSigner(false));
+    }
+  }, [isPrivate]);
+
+  useEffect(() => {
     if (validateUrl(debouncedLink)) {
       fetchMetadata(debouncedLink)
         ?.then((r) => {
@@ -206,79 +253,63 @@ export default function CreateListEvent({ listEvent }: CreateListEventProps) {
   return (
     <Template title="Create Note" className="md:max-w-[400px]">
       {metadata && (
-        <div className="center space-y-6">
-          <Card className="max-w-[300px]">
-            {metadata.image && (
-              <div className="center flex aspect-[2/1] flex-col overflow-hidden">
-                <Image
-                  height="288"
-                  width="288"
-                  alt={metadata.title}
-                  src={metadata.image}
-                  unoptimized
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
-            <CardHeader className="border-0 border-t-2">
-              <CardTitle>{metadata.title}</CardTitle>
-              <CardDescription className="line-clamp-2 text-xs text-primary">
-                {metadata.description}
-              </CardDescription>
-            </CardHeader>
-          </Card>
+        <div className="center pointer-events-none mb-2 space-y-6">
+          <UrlCard url={link} metadata={metadata} />
         </div>
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {fields.map(({ label, slug, type, placeholder, ...fieldProps }) => (
-            <FormField
-              key={slug}
-              control={form.control}
-              name={slug as Path<CreateListEventType>}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  {type === "input" ? (
-                    <FormControl>
-                      <Input placeholder={placeholder} {...field} />
-                    </FormControl>
-                  ) : type === "text-area" ? (
-                    <FormControl>
-                      <Textarea
-                        placeholder={placeholder}
-                        {...field}
-                        className="auto-sizing"
-                      />
-                    </FormControl>
-                  ) : type === "select" ? (
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+          {fields.map(({ label, slug, type, placeholder, ...fieldProps }) => {
+            if (isPrivate && slug === "sender") return null;
+            return (
+              <FormField
+                key={slug}
+                control={form.control}
+                name={slug as Path<CreateListEventType>}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{label}</FormLabel>
+                    {type === "input" ? (
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={placeholder} />
-                        </SelectTrigger>
+                        <Input placeholder={placeholder} {...field} />
                       </FormControl>
-                      <SelectContent className="z-modal+">
-                        {fieldProps.options?.map((o) => (
-                          <SelectItem key={o.value} value={o.value}>
-                            {o.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <FormControl>
-                      <Input placeholder={placeholder} {...field} />
-                    </FormControl>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
+                    ) : type === "text-area" ? (
+                      <FormControl>
+                        <Textarea
+                          placeholder={placeholder}
+                          {...field}
+                          className="auto-sizing"
+                        />
+                      </FormControl>
+                    ) : type === "select" ? (
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={placeholder} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="z-modal+">
+                          {fieldProps.options?.map((o) => (
+                            <SelectItem key={o.value} value={o.value}>
+                              {o.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <FormControl>
+                        <Input placeholder={placeholder} {...field} />
+                      </FormControl>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            );
+          })}
 
           <Button
             type="submit"

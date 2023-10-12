@@ -5,6 +5,7 @@ import Link from "next/link";
 import Feed from "@/containers/Feed";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
 import { unixTimeNowInSeconds } from "@/lib/nostr/dates";
+import { NDKKind } from "@nostr-dev-kit/ndk";
 export default function Home() {
   const { follows } = useCurrentUser();
 
@@ -13,8 +14,8 @@ export default function Home() {
       <div className="mx-auto max-w-[600px] px-4 sm:px-10 md:px-10">
         <Feed
           filter={{
-            kinds: [1],
-            authors: follows?.length ? follows : undefined,
+            kinds: [30402 as NDKKind],
+            // authors: follows?.length ? follows : undefined,
             until: unixTimeNowInSeconds(),
           }}
         />

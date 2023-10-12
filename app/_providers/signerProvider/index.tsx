@@ -8,7 +8,7 @@ import {
   useEffect,
 } from "react";
 import useCurrentUser from "@/lib/hooks/useCurrentUser";
-import { findEphemeralSigner } from "@/lib/actions/signers";
+import { findEphemeralSigner } from "@/lib/actions/ephemeral";
 import {
   NDKPrivateKeySigner,
   NDKUser,
@@ -64,7 +64,7 @@ export default function SignerProvider({
       `${currentUser?.npub.slice(0, 9)}...`
     }'s `;
 
-    return name + list.title;
+    return name + list.title ?? "List";
   }
 
   async function getSigner(list: NDKList): Promise<SignerStoreItem> {

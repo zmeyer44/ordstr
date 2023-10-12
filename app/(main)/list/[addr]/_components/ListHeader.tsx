@@ -58,7 +58,7 @@ export default function ListHeader({ event, actions }: ListHeaderProps) {
             </div>
           </div>
           <div className="ml-auto flex items-center gap-x-3 py-2">
-            {actions?.map(({ element: Element }) => <Element />)}
+            {actions?.map(({ element: Element }, idx) => <Element key={idx} />)}
             <div className="rounded-md bg-foreground">
               {/* <ShareButton ordinalsAddress={user.ordinalsAddress} /> */}
             </div>
